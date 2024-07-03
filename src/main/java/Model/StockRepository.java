@@ -37,4 +37,9 @@ public class StockRepository {
             System.out.println("Product: " + entry.getKey().getName() + ", Quantity: " + entry.getValue());
         }
     }
+
+    public void printProductStock(Product product) {
+        int quantity = stock.getOrDefault(product, 0);
+        System.out.println("Product: " + product.getName() + ", Quantity: " + quantity);
+    }
 }

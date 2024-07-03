@@ -3,17 +3,16 @@ package Model;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class FlowerShopManager {
     private String name;
     private StockRepository stockRepository;
-//    private List<Ticket> purchaseHistory;
+    //private List<Ticket> purchaseHistory;
     private double totalEarnings;
 
     public FlowerShopManager(String name) {
         this.name = name;
         this.stockRepository = new StockRepository();
-//        this.purchaseHistory = new ArrayList<>();
+       // this.purchaseHistory = new ArrayList<>();
         this.totalEarnings = 0.0;
     }
 
@@ -44,6 +43,10 @@ public class FlowerShopManager {
         stockRepository.printStock();
     }
 
+//    public void showProducts(Product product) {
+//        stockRepository.printProductStock(product);
+//    }
+//
 //    public void showHistory() {
 //        for (Ticket ticket : purchaseHistory) {
 //            System.out.println(ticket);
