@@ -48,9 +48,9 @@ public class Input {
         return intInput;
     }
 
-    public static int readDouble(String message) {
+    public static double readDouble(String message) {
         Scanner scanner = new Scanner(System.in);
-        int doubleInput = 0.0;
+        double doubleInput = 0.0;
         boolean isValid = false;
 
         while (!isValid) {
