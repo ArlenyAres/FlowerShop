@@ -1,4 +1,7 @@
-package Model;
+package Services;
+
+import Model.Product;
+import Model.Purchase;
 
 import java.util.Map;
 
