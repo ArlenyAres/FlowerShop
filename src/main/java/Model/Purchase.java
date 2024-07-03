@@ -5,12 +5,14 @@ import java.util.Map;
 import java.util.UUID;
 
 public class Purchase {
+    private String flowerShopName;
     private int purchaseID;
     private Date date;
     private Map<Product, Integer> purchasedProductsList;
 
-    public Purchase(Map<Product, Integer> purchasedProductsList) {
-        this.purchaseID = Integer.valueOf(UUID.randomUUID().toString());
+    public Purchase(FlowerShop flowerShop, Map<Product, Integer> purchasedProductsList) {
+        this.flowerShopName = flowerShop.getName();
+        this.purchaseID = UUID.randomUUID().hashCode();
         this.date = new Date();
         this.purchasedProductsList = purchasedProductsList;
     }
@@ -29,4 +31,6 @@ public class Purchase {
     public Date getDate() {
         return date;
     }
+
+    public String getFlowerShopName() { return flowerShopName; }
 }
