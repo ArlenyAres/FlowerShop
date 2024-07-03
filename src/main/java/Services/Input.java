@@ -1,6 +1,6 @@
-package Model;
+package Services;
 
-import Model.Exception.InvalidInputException;
+import Exception.InvalidInputException;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -17,10 +17,10 @@ public class Input {
                 System.out.println(message);
                 userInput = scannerString.nextLine();
                 if (userInput.isEmpty()) {
-                    throw new InvalidInputException("Model.Input cannot be empty.");
+                    throw new InvalidInputException("Services.Input cannot be empty.");
                 }
                 if (!containsOnlyLetters(userInput)) {
-                    throw new InvalidInputException("Format Error. Model.Input must be a string containing only letters.");
+                    throw new InvalidInputException("Format Error. Services.Input must be a string containing only letters.");
                 }
                 isValid = true;
             } catch (Exception e) {
@@ -41,7 +41,7 @@ public class Input {
                 intInput = scanner.nextInt();
                 isValid = true;
             } catch (InputMismatchException e) {
-                System.out.println("Model.Input Invalid! Format Error: Expected an Int format (e.g., 1).");
+                System.out.println("Services.Input Invalid! Format Error: Expected an Int format (e.g., 1).");
                 scanner.next();
             }
         }
@@ -59,7 +59,7 @@ public class Input {
                 doubleInput = scanner.nextDouble();
                 isValid = true;
             } catch (InputMismatchException e) {
-                System.out.println("Model.Input Invalid! Format Error: Expected a Double format (e.g., 1.0).");
+                System.out.println("Services.Input Invalid! Format Error: Expected a Double format (e.g., 1.0).");
                 scanner.next();
             }
         }
