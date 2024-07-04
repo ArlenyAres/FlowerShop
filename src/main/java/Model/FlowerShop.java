@@ -12,11 +12,11 @@ public class FlowerShop {
     private double stockValue;
 
     // Constructor
-    public FlowerShop (int id, String name) {
+    public FlowerShop (String name) {
         this.id = nextId++;
         this.name = name;
-        this.stockValue = totalValue();
         this.stock = new ArrayList<>();
+        this.stockValue = totalValue();
     }
 
     // Getters
@@ -30,6 +30,10 @@ public class FlowerShop {
         return stockValue;
     }
 
+    public ArrayList<Product> getStock() {
+        return stock;
+    }
+
     // Setters
     public void setName(String name){
         this.name = name;
@@ -41,7 +45,7 @@ public class FlowerShop {
         int flowerStock = 0;
         int treeStock = 0;
 
-        if (this.stock.isEmpty()){
+        if (stock.isEmpty()){
             System.out.println("The stock is empty");
         } else {
             verifyStock(decorationStock,flowerStock,treeStock);
@@ -52,7 +56,7 @@ public class FlowerShop {
     }
 
     public void verifyStock(int decorationStock, int flowerStock, int treeStock){
-        for (Product product : this.stock){
+        for (Product product : stock){
             if (product.getClass() == Decoration.class){
                 decorationStock++;
             } else if (product.getClass() == Flower.class) {
@@ -66,9 +70,9 @@ public class FlowerShop {
     public double totalValue(){
         double totalValue = 0d;
 
-        if (!this.stock.isEmpty()){
-            for (int i = 0; i < stock.size(); i++) {
-                totalValue += stock.get(i).getPrice();
+        if (!stock.isEmpty()){
+            for (Product product : stock) {
+                totalValue += product.getPrice();
             }
         }
         return totalValue;
