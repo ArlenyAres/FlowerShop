@@ -17,10 +17,6 @@ public class Purchase {
         this.purchaseProductsList = purchaseProductsList;
     }
 
-    public void addProduct(Product product, int quantity) {
-        flowerShop.verifyStock();
-    }
-
     public double calculateTotalPrice() {
         double totalPrice = purchaseProductsList.entrySet().stream()
                 .mapToDouble(entry -> entry.getKey().getPrice() * entry.getValue())
