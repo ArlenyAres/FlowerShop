@@ -18,10 +18,9 @@ public class Purchase {
     }
 
     public double calculateTotalPrice() {
-        double totalPrice = purchasedProductsList.entrySet().stream()
+        return purchasedProductsList.entrySet().stream()
                 .mapToDouble(entry -> entry.getKey().getPrice() * entry.getValue())
                 .sum();
-        return totalPrice;
     }
 
     public Map<Product, Integer> getPurchasedProductList() {
@@ -32,5 +31,7 @@ public class Purchase {
         return date;
     }
 
-    public String getFlowerShopName() { return flowerShopName; }
+    public String getFlowerShopName() {
+        return flowerShopName;
+    }
 }

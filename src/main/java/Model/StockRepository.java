@@ -1,7 +1,6 @@
 package Model;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class StockRepository {
@@ -15,11 +14,13 @@ public class StockRepository {
         stock.put(product, stock.getOrDefault(product, 0) + quantity);
     }
 
-    public void removeProducts(List<Product> products) {
-        for (Product product : products) {
+    public void removeProducts(Map<Product, Integer> products) {
+        for (Map.Entry<Product, Integer> entry : products.entrySet()) {
+            Product product = entry.getKey();
+            int quantity = entry.getValue();
             int currentStock = stock.getOrDefault(product, 0);
-            if (currentStock > 0) {
-                stock.put(product, currentStock - 1);
+            if (currentStock >= quantity) {
+                stock.put(product, currentStock - quantity);
             }
         }
     }

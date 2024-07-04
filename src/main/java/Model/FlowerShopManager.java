@@ -1,23 +1,27 @@
 package Model;
 
+import Services.Ticket;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FlowerShopManager {
-    private String name;
+    private FlowerShop flowerShop;
     private StockRepository stockRepository;
-    //private List<Ticket> purchaseHistory;
+    private List<Purchase> purchaseHistory;
     private double totalEarnings;
 
     public FlowerShopManager(String name) {
-        this.name = name;
+        this.flowerShop = new FlowerShop(name);
         this.stockRepository = new StockRepository();
-       // this.purchaseHistory = new ArrayList<>();
+        this.purchaseHistory = new ArrayList<>();
         this.totalEarnings = 0.0;
     }
 
     public void createFlorist(String name) {
-        this.name = name;
+        this.flowerShop = new FlowerShop(name);
     }
 
     public void manageStock(Product product, int quantity) {
@@ -28,12 +32,14 @@ public class FlowerShopManager {
         return stockRepository.getTotalStockValue();
     }
 
-//    public void createPurchaseTicket(List<Product> products) {
-//        Ticket ticket = new Ticket(products);
-//        purchaseHistory.add(ticket);
-//        totalEarnings += ticket.getTotalPrice();
-//        stockRepository.removeProducts(products);
-//    }
+    public void createPurchaseTicket(Map<Product, Integer> products) {
+        Purchase purchase = new Purchase(flowerShop, products);
+        Ticket ticket = new Ticket(purchase);
+        ticket.createTicket();
+        purchaseHistory.add(purchase);
+        totalEarnings += purchase.calculateTotalPrice();
+        stockRepository.removeProducts(products);
+    }
 
     public double showTotalPurchaseValue() {
         return totalEarnings;
@@ -43,13 +49,13 @@ public class FlowerShopManager {
         stockRepository.printStock();
     }
 
-//    public void showProducts(Product product) {
-//        stockRepository.printProductStock(product);
-//    }
-//
-//    public void showHistory() {
-//        for (Ticket ticket : purchaseHistory) {
-//            System.out.println(ticket);
-//        }
-//    }
+    public void showProducts(Product product) {
+        stockRepository.printProductStock(product);
+    }
+
+    public void showHistory() {
+        for (Purchase purchase : purchaseHistory) {
+            System.out.println(purchase);
+        }
+    }
 }

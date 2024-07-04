@@ -12,11 +12,12 @@ public class FlowerShop {
     private double stockValue;
 
     // Constructor
-    public FlowerShop (int id, String name) {
+    public FlowerShop (String name) {
         this.id = nextId++;
         this.name = name;
-        this.stockValue = totalValue();
         this.stock = new ArrayList<>();
+        this.stockValue = totalValue();
+
     }
 
     // Getters
