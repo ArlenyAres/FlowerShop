@@ -18,15 +18,17 @@ public class StockRepository {
         stock.put(product, stock.getOrDefault(product, 0) + quantity);
     }
 
-    public void removeProducts(Map<Product, Integer> products) {
-        for (Map.Entry<Product, Integer> entry : products.entrySet()) {
+    public void removeProducts(Product product) { //(Map<Product, Integer> products)
+        stock.remove(product);
+
+        /*for (Map.Entry<Product, Integer> entry : products.entrySet()) {
             Product product = entry.getKey();
             int quantity = entry.getValue();
             int currentStock = stock.getOrDefault(product, 0);
             if (currentStock >= quantity) {
                 stock.put(product, currentStock - quantity);
             }
-        }
+        }*/
     }
 
     public double getTotalStockValue() {

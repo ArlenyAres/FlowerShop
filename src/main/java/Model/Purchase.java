@@ -1,6 +1,5 @@
 package Model;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
@@ -20,7 +19,7 @@ public class Purchase {
     }
 
     public void addProductInPurchaseCart(Product product, int quantity) throws InsufficientStockException {
-        Map<Product, Integer> stock = flowerShop.getStock();
+        Map<Product, Integer> stock = flowerShop.getStockFromRepository();
 
         if (stock.containsKey(product)) {
             int availableQuantity = stock.get(product);
@@ -47,7 +46,7 @@ public class Purchase {
                 } else {
                     purchaseProductsList.put(product, currentQuantity - quantity);
                 }
-                Map<Product, Integer> stock = flowerShop.getStock();
+                Map<Product, Integer> stock = flowerShop.getStockFromRepository();
                 stock.put(product, stock.getOrDefault(product, 0) + quantity);
                 System.out.println(quantity + " " + product.getName() + "(s) removed from the purchase cart.");
             } else {

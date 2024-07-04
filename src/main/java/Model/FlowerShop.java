@@ -1,18 +1,24 @@
 package Model;
 
+import java.util.ArrayList;
+
 public class FlowerShop {
 
     private int id;
     private static int nextId = 1;
     private String name;
-    private StockRepository stock;
+    private StockRepository stockFromRepository;
     private double stockValue;
+    private ArrayList<Purchase> purchaseHistory;
+    private double totalEarnings;
 
     public FlowerShop (String name) {
         this.id = nextId++;
         this.name = name;
-        this.stock = new StockRepository();
-        this.stockValue = stock.getTotalStockValue();
+        this.stockFromRepository = new StockRepository();
+        this.stockValue = stockFromRepository.getTotalStockValue();
+        this.purchaseHistory = new ArrayList<>();
+        this.totalEarnings = 0.0;
     }
 
     public int getId(){
@@ -20,6 +26,9 @@ public class FlowerShop {
     }
     public String getName(){
         return name;
+    }
+    public StockRepository getStockFromRepository() {
+        return stockFromRepository;
     }
 
     public void setName(String name){
@@ -31,7 +40,7 @@ public class FlowerShop {
         int flowerStock = 0;
         int treeStock = 0;
 
-        if (stock.getStock().isEmpty()){
+        if (stockFromRepository.getStock().isEmpty()){
             System.out.println("The stock is empty");
         } else {
             verifyStock(decorationStock,flowerStock,treeStock);
@@ -42,7 +51,7 @@ public class FlowerShop {
     }
 
     public void verifyStock(int decorationStock, int flowerStock, int treeStock){
-        for (Product product : stock.getStock().keySet()){
+        for (Product product : stockFromRepository.getStock().keySet()){
             if (product.getClass() == Decoration.class){
                 decorationStock++;
             } else if (product.getClass() == Flower.class) {
