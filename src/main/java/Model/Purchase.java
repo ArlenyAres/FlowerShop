@@ -5,33 +5,35 @@ import java.util.Map;
 import java.util.UUID;
 
 public class Purchase {
-    private String flowerShopName;
+    private FlowerShop flowerShop;
     private int purchaseID;
     private Date date;
-    private Map<Product, Integer> purchasedProductsList;
+    private Map<Product, Integer> purchaseProductsList;
 
-    public Purchase(FlowerShop flowerShop, Map<Product, Integer> purchasedProductsList) {
-        this.flowerShopName = flowerShop.getName();
+    public Purchase(FlowerShop flowerShop, Map<Product, Integer> purchaseProductsList) {
+        this.flowerShop = flowerShop;
         this.purchaseID = UUID.randomUUID().hashCode();
         this.date = new Date();
-        this.purchasedProductsList = purchasedProductsList;
+        this.purchaseProductsList = purchaseProductsList;
+    }
+
+    public void addProduct(Product product, int quantity) {
+        flowerShop.verifyStock();
     }
 
     public double calculateTotalPrice() {
-        return purchasedProductsList.entrySet().stream()
+        double totalPrice = purchaseProductsList.entrySet().stream()
                 .mapToDouble(entry -> entry.getKey().getPrice() * entry.getValue())
                 .sum();
     }
 
     public Map<Product, Integer> getPurchasedProductList() {
-        return purchasedProductsList;
+        return purchaseProductsList;
     }
 
     public Date getDate() {
         return date;
     }
 
-    public String getFlowerShopName() {
-        return flowerShopName;
-    }
+    public String getFlowerShopName() { return flowerShop.getName(); }
 }
