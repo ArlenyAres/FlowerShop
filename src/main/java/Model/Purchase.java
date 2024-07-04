@@ -21,6 +21,7 @@ public class Purchase {
         double totalPrice = purchaseProductsList.entrySet().stream()
                 .mapToDouble(entry -> entry.getKey().getPrice() * entry.getValue())
                 .sum();
+        return totalPrice;
     }
 
     public Map<Product, Integer> getPurchasedProductList() {
