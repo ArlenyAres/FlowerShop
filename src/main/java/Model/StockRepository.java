@@ -10,6 +10,10 @@ public class StockRepository {
         this.stock = new HashMap<>();
     }
 
+    public Map<Product, Integer> getStock() {
+        return stock;
+    }
+
     public void addProduct(Product product, int quantity) {
         stock.put(product, stock.getOrDefault(product, 0) + quantity);
     }
