@@ -1,84 +1,65 @@
 package Model;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 
 public class FlowerShop {
 
-    // Attributes
     private int id;
     private static int nextId = 1;
     private String name;
-    private Map<Product, Integer> stock;
+    private StockRepository stockFromRepository;
     private double stockValue;
+    private ArrayList<Purchase> purchaseHistory;
+    private double totalEarnings;
 
-    // Constructor
-    public FlowerShop(String name) {
+    public FlowerShop (String name) {
         this.id = nextId++;
         this.name = name;
-        this.stock = new HashMap<>();
-        this.stockValue = totalValue();
+        this.stockFromRepository = new StockRepository();
+        this.stockValue = stockFromRepository.getTotalStockValue();
+        this.purchaseHistory = new ArrayList<>();
+        this.totalEarnings = 0.0;
     }
 
-    // Getters
-    public int getId() {
+    public int getId(){
         return id;
     }
-
-    public String getName() {
+    public String getName(){
         return name;
     }
-
-    public double getStockValue() {
-        return stockValue;
+    public StockRepository getStockFromRepository() {
+        return stockFromRepository;
     }
 
-    public Map<Product, Integer> getStock() {
-        return stock;
-    }
-
-    // Setters
-    public void setName(String name) {
+    public void setName(String name){
         this.name = name;
     }
 
-    // General methods
-    public void showStock() {
+    public void showStock(){
         int decorationStock = 0;
         int flowerStock = 0;
         int treeStock = 0;
 
-        if (stock.isEmpty()) {
+        if (stockFromRepository.getStock().isEmpty()){
             System.out.println("The stock is empty");
         } else {
-            verifyStock(decorationStock, flowerStock, treeStock);
+            verifyStock(decorationStock,flowerStock,treeStock);
             System.out.println("Decorations : " + decorationStock +
                     "\nFlowers : " + flowerStock +
                     "\nTrees : " + treeStock);
         }
     }
 
-    public void verifyStock(int decorationStock, int flowerStock, int treeStock) {
-        for (Map.Entry<Product, Integer> entry : stock.entrySet()) {
-            Product product = entry.getKey();
-            if (product.getClass() == Decoration.class) {
-                decorationStock += entry.getValue();
+    public void verifyStock(int decorationStock, int flowerStock, int treeStock){
+        for (Product product : stockFromRepository.getStock().keySet()){
+            if (product.getClass() == Decoration.class){
+                decorationStock++;
             } else if (product.getClass() == Flower.class) {
-                flowerStock += entry.getValue();
+                flowerStock++;
             } else if (product.getClass() == Tree.class) {
-                treeStock += entry.getValue();
+                treeStock++;
             }
         }
     }
 
-    public double totalValue() {
-        double totalValue = 0d;
-
-        if (!stock.isEmpty()) {
-            for (Map.Entry<Product, Integer> entry : stock.entrySet()) {
-                totalValue += entry.getKey().getPrice() * entry.getValue();
-            }
-        }
-        return totalValue;
-    }
 }
