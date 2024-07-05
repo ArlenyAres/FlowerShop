@@ -18,8 +18,9 @@ public class Purchase {
         this.purchaseProductsList = purchaseProductsList;
     }
 
-    /*public void addProductInPurchaseCart(Product product, int quantity) throws InsufficientStockException {
-        Map<Product, Integer> stock = flowerShop.getStockFromRepository();
+    public void addProductInPurchaseCart(Product product, int quantity) throws InsufficientStockException {
+        StockRepository stockRepository = flowerShop.getStockFromRepository();
+        Map<Product, Integer> stock = stockRepository.getStock();
 
         if (stock.containsKey(product)) {
             int availableQuantity = stock.get(product);
@@ -34,9 +35,9 @@ public class Purchase {
         } else {
             System.out.println(product.getName() + " is not available in stock.");
         }
-    }*/
+    }
 
-    /*public void removeProductFromPurchaseCart(Product product, int quantity) {
+    public void removeProductFromPurchaseCart(Product product, int quantity) {
         if (purchaseProductsList.containsKey(product)) {
             int currentQuantity = purchaseProductsList.get(product);
 
@@ -46,7 +47,8 @@ public class Purchase {
                 } else {
                     purchaseProductsList.put(product, currentQuantity - quantity);
                 }
-                Map<Product, Integer> stock = flowerShop.getStockFromRepository();
+                StockRepository stockRepository = flowerShop.getStockFromRepository();
+                Map<Product, Integer> stock = stockRepository.getStock();
                 stock.put(product, stock.getOrDefault(product, 0) + quantity);
                 System.out.println(quantity + " " + product.getName() + "(s) removed from the purchase cart.");
             } else {
@@ -55,7 +57,7 @@ public class Purchase {
         } else {
             System.out.println(product.getName() + " is not in the purchase cart.");
         }
-    }*/
+    }
 
     public Map<Product, Integer> checkoutPurchase() {
         return purchaseProductsList;
@@ -67,9 +69,9 @@ public class Purchase {
                 .sum();
     }
 
-    /*public Map<Product, Integer> getPurchasedProductList() {
+    public Map<Product, Integer> getPurchasedProductList() {
         return purchaseProductsList;
-    }*/
+    }
 
     public Date getDate() {
         return date;
