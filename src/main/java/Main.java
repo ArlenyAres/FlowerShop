@@ -22,5 +22,9 @@ public class Main {
             mongoDBConnection.closeConection();
         }
 
+        mongoDBConnection.showInfoCluster();
+
+        mongoDBConnection.showDataBase();
+
     }
 }

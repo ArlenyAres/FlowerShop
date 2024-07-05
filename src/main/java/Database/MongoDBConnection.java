@@ -5,6 +5,7 @@ import Model.Product;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoException;
+import com.mongodb.client.ListDatabasesIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
@@ -55,6 +56,30 @@ public class MongoDBConnection extends Throwable implements ProductDataBase {
         if (this.client != null) {
             this.client.close();
             System.out.println("The connetion is CLOSED");
+        }
+    }
+
+    public void showInfoCluster(){
+        if (this.client == null) {
+            System.out.println("No connection established");
+            return;
+        }
+        System.out.println("Showing cluster info");
+        System.out.println(this.client.getClusterDescription());
+    }
+
+    public void showDataBase(){
+        if (this.client == null) {
+            System.out.println("No connection established");
+            return;
+        }
+        System.out.println("Showing databases");
+
+        ListDatabasesIterable<Document> databases = this.client.listDatabases();
+        int i = 1;
+        for (Document document : databases) {
+            System.out.println(String.format("%d-) %s", i, document.toString()));
+            i++;
         }
     }
 
