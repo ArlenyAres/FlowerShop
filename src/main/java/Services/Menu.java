@@ -1,5 +1,6 @@
 package Services;
 
+import Model.FlowerShop;
 import Model.FlowerShopManager;
 import Model.Product;
 
@@ -11,6 +12,7 @@ public class Menu {
 
     public static void menu() {
         FlowerShopManager admin = new FlowerShopManager();
+        FlowerShop shop;
         Product product = null;
         int option = -1;
         int quantity = 0;
@@ -19,8 +21,8 @@ public class Menu {
 
         do {
             System.out.println("Welcome, how may I help you?");
-            System.out.println("1. Create flower shop\n " +
-                    "2.Add product to the stock\n " +
+            System.out.println(" 1. Create flower shop\n " +
+                    "2. Add product to the stock\n " +
                     "3. Remove product from the stock\n " +
                     "4. Show stock\n " +
                     "5. Show products by quantity\n " +
@@ -33,64 +35,33 @@ public class Menu {
 
             switch (option){
                 case 1 :
-                    text = readString("What it the name of the new flower shop?");
+                    text = readString("What is the name of the new flower shop?");
                     admin.createFlorist(text);
-                    System.out.println("The new flower shop " + text + " was created");
+                    System.out.println("The new flower shop " + text + " was created!\n");
                     break;
                 case 2 :
-                    text = readString("What is the name of the flower shop?");
-                    product = createProduct();
-                    quantity = readInt("how many products?");
-
-                    for (int i = 0; i < admin.getShopList().size(); i++) {
-                        if (admin.getShopList().get(i).getName().equalsIgnoreCase(text)){
-                            admin.getShopList().get(i).getStockFromRepository().addProduct(product,quantity);
-                        }
-                    }
+                    createProduct(admin);
+                    System.out.println("The products were added to the stock");
                     break;
                 case 3 :
-                    text = readString("what is the name of the flower shop?");
-
-                    for (int i = 0; i < admin.getShopList().size(); i++) {
-                        if (admin.getShopList().get(i).getName().equalsIgnoreCase(text)){
-                            text = readString("What is the name of the product " +
-                                    "that you want to remove from the stock?");
-                            for (Product productToRemove :
-                                    admin.getShopList().get(i).getStockFromRepository().getStock().keySet()) {
-                                if (productToRemove.getName().equalsIgnoreCase(text)){
-                                    product = productToRemove;
-                                    admin.getShopList().get(i).getStockFromRepository().removeProducts(product);
-                                }
-                            }
-                        }
-                    }
+                    text = readString("What is the name of the flower shop?");
+                    shop = findShop(admin, text);
+                    shop.getStockFromRepository().removeProducts();
                     break;
                 case 4 :
                     text = readString("what is the name of the flower shop?");
-
-                    for (int i = 0; i < admin.getShopList().size(); i++) {
-                        if (admin.getShopList().get(i).getName().equalsIgnoreCase(text)){
-                            admin.getShopList().get(i).showStock();
-                        }
-                    }
+                    shop = findShop(admin, text);
+                    shop.showStock();
                     break;
                 case 5 :
                     text = readString("what is the name of the flower shop?");
-
-                    for (int i = 0; i < admin.getShopList().size(); i++) {
-                        if (admin.getShopList().get(i).getName().equalsIgnoreCase(text)){
-                            admin.getShopList().get(i).getStockFromRepository().printStock();
-                        }
-                    }
+                    shop = findShop(admin, text);
+                    shop.getStockFromRepository().printStock();
                     break;
                 case 6 :
                     text = readString("what is the name of the flower shop?");
-
-                    for (int i = 0; i < admin.getShopList().size(); i++) {
-                        if (admin.getShopList().get(i).getName().equalsIgnoreCase(text)){
-                            admin.getShopList().get(i).getStockFromRepository().getTotalStockValue();
-                        }
-                    }
+                    shop = findShop(admin, text);
+                    System.out.println(shop.getStockValue());
                     break;
                 case 7 :
                     break;
@@ -106,5 +77,16 @@ public class Menu {
                     System.out.println("Invalid option");
             }
         } while (working);
+    }
+
+    public static FlowerShop findShop(FlowerShopManager admin, String shopName){
+        FlowerShop shop = null;
+
+        for (int i = 0; i < admin.getShopList().size(); i++) {
+            if (admin.getShopList().get(i).getName().equalsIgnoreCase(shopName)){
+                shop = admin.getShopList().get(i);
+            }
+        }
+        return shop;
     }
 }

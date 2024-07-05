@@ -1,42 +1,37 @@
 package Services;
 
-import Model.Decoration;
-import Model.Flower;
-import Model.Product;
-import Model.Tree;
-
+import Model.*;
 import static Services.Input.*;
+import static Services.Menu.findShop;
 
 public class SubMenu {
-    public static Product createProduct() {
-        Product product = null;
+    public static void createProduct(FlowerShopManager admin) {
+        String shopName = "";
         int option = -1;
-        int type = 0;
-        String name = "";
-        String color = "";
-        double price = 0d;
-        double height = 0d;
+        int quantity = 0;
         boolean working = true;
 
+        shopName = readString("What is the name of the flower shop?");
+        quantity = readInt("How many products? \n");
         do {
             System.out.println("Products : \n " +
                     "1. Decoration\n " +
                     "2. Flower\n " +
                     "3. Tree\n " +
                     "0. Exit");
-            option = readInt("What type of product would like to add?");
+            option = readInt("What type of product would you like to add?\n");
 
             switch (option) {
                 case 1:
-                    product = createDecoration();
+                    createDecoration(shopName, quantity, admin);
                     working = false;
                     break;
                 case 2:
-                    product = createFlower();
+                    createFlower(shopName, quantity, admin);
                     working = false;
                     break;
                 case 3:
-                    product = createTree();
+                    createTree(shopName, quantity, admin);
                     working = false;
                     break;
                 case 0:
@@ -47,53 +42,67 @@ public class SubMenu {
             }
 
         } while (working);
-        return product;
     }
 
-    public static Decoration createDecoration(){
-        Decoration product = null;
+    public static void createDecoration(String shopName, int quantity, FlowerShopManager admin){
+        Decoration product;
+        FlowerShop shop = findShop(admin, shopName);
         int type = 0;
-        String name = "";
+        int unit = 1;
+        String productName = "";
         double price = 0d;
 
-        name = readString("Name of the decoration? ");
-        price = readDouble("How much is it? ");
-        type = readInt("What type of decoration?\n 1. WOOD\n 2. PLASTIC");
-        if (type == 1){
-            product = new Decoration(name, price, Decoration.DecorationType.WOOD);
-        } else if (type == 2) {
-            product = new Decoration(name, price, Decoration.DecorationType.PLASTIC);
-        } else {
-            System.out.println("Unable to create the product, please verify the product info! ");
+        productName = readString("Name of the decoration? ");
+        price = readDouble("How much is it?\n");
+        type = readInt("What type of decoration?\n 1. WOOD\n 2. PLASTIC\n");
+
+        for (int i = 0; i < quantity; i++) {
+            if (type == 1){
+                product = new Decoration(productName, price, Decoration.DecorationType.WOOD);
+                shop.getStockFromRepository().addProduct(product, unit);
+            } else if (type == 2) {
+                product = new Decoration(productName, price, Decoration.DecorationType.PLASTIC);
+                shop.getStockFromRepository().addProduct(product, unit);
+            } else {
+                System.out.println("Unable to create the product, please verify the product info! ");
+            }
         }
-        return product;
     }
 
-    public static Flower createFlower(){
+    public static void createFlower(String shopName, int quantity, FlowerShopManager admin){
         Flower product;
+        FlowerShop shop = findShop(admin, shopName);
         String name = "";
         String color = "";
         double price = 0d;
+        int unit = 1;
 
-        name = readString("Name of the decoration? ");
-        price = readDouble("How much is it? ");
-        color = readString("Color of the decoration?");
-        product = new Flower(name,price,color);
+        name = readString("Name of the flower? ");
+        price = readDouble("How much is it? \n");
+        color = readString("Color of the flower?");
 
-        return product;
+        for (int i = 0; i < quantity; i++) {
+            product = new Flower(name,price,color);
+            shop.getStockFromRepository().addProduct(product, unit);
+        }
     }
 
-    public static Tree createTree(){
+    public static void createTree(String shopName, int quantity, FlowerShopManager admin){
         Tree product;
+        FlowerShop shop = findShop(admin, shopName);
         String name = "";
         double price = 0d;
         double height = 0d;
+        int unit = 1;
 
-        name = readString("Name of the decoration? ");
-        price = readDouble("How much is it? ");
-        height = readDouble("What is the height of the tree");
-        product = new Tree(name, price, height);
+        name = readString("Name of the tree? ");
+        price = readDouble("How much is it? \n");
+        height = readDouble("What is the height of the tree\n");
 
-        return product;
+        for (int i = 0; i < quantity; i++) {
+            product = new Tree(name, price, height);
+            shop.getStockFromRepository().addProduct(product, unit);
+        }
     }
+
 }

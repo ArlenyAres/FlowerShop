@@ -18,7 +18,7 @@ public class Purchase {
         this.purchaseProductsList = purchaseProductsList;
     }
 
-    public void addProductInPurchaseCart(Product product, int quantity) throws InsufficientStockException {
+    /*public void addProductInPurchaseCart(Product product, int quantity) throws InsufficientStockException {
         Map<Product, Integer> stock = flowerShop.getStockFromRepository();
 
         if (stock.containsKey(product)) {
@@ -34,9 +34,9 @@ public class Purchase {
         } else {
             System.out.println(product.getName() + " is not available in stock.");
         }
-    }
+    }*/
 
-    public void removeProductFromPurchaseCart(Product product, int quantity) {
+    /*public void removeProductFromPurchaseCart(Product product, int quantity) {
         if (purchaseProductsList.containsKey(product)) {
             int currentQuantity = purchaseProductsList.get(product);
 
@@ -55,7 +55,7 @@ public class Purchase {
         } else {
             System.out.println(product.getName() + " is not in the purchase cart.");
         }
-    }
+    }*/
 
     public Map<Product, Integer> checkoutPurchase() {
         return purchaseProductsList;
@@ -67,9 +67,9 @@ public class Purchase {
                 .sum();
     }
 
-    public Map<Product, Integer> getPurchasedProductList() {
+    /*public Map<Product, Integer> getPurchasedProductList() {
         return purchaseProductsList;
-    }
+    }*/
 
     public Date getDate() {
         return date;

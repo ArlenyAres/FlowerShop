@@ -1,7 +1,11 @@
 package Model;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+
+import static Services.Input.readInt;
+import static Services.Input.readString;
 
 public class StockRepository {
     private Map<Product, Integer> stock;
@@ -18,17 +22,42 @@ public class StockRepository {
         stock.put(product, stock.getOrDefault(product, 0) + quantity);
     }
 
-    public void removeProducts(Product product) { //(Map<Product, Integer> products)
-        stock.remove(product);
+    public void removeProducts() { //(Map<Product, Integer> products)
+        String productName = "";
+        int counter = 0;
+        int quantity = 0;
 
-        /*for (Map.Entry<Product, Integer> entry : products.entrySet()) {
-            Product product = entry.getKey();
-            int quantity = entry.getValue();
-            int currentStock = stock.getOrDefault(product, 0);
-            if (currentStock >= quantity) {
-                stock.put(product, currentStock - quantity);
+        productName = readString("Name of the product? ");
+        quantity = readInt("How many products? \n");
+
+        removeProcess(productName, counter, quantity);
+    }
+
+    public void removeProcess(String productName, int counter, int quantity){
+        Iterator<Map.Entry<Product, Integer>> iterator;
+        Map.Entry<Product, Integer> entry;
+        Product productToRemove;
+
+        iterator = stock.entrySet().iterator();
+
+        while (iterator.hasNext() && quantity > 0) {
+            entry = iterator.next();
+            productToRemove = entry.getKey();
+            if (productToRemove.getName().equalsIgnoreCase(productName)) {
+                iterator.remove();
+                quantity--;
+                counter++;
             }
-        }*/
+        }
+        removeMessage(counter);
+    }
+
+    public void removeMessage(int counter) {
+        if (counter == 0){
+            System.out.println("Product not found\n");
+        } else {
+            System.out.println("Products removed from the stock : " + counter + "\n");
+        }
     }
 
     public double getTotalStockValue() {
@@ -43,10 +72,5 @@ public class StockRepository {
         for (Map.Entry<Product, Integer> entry : stock.entrySet()) {
             System.out.println("Product: " + entry.getKey().getName() + ", Quantity: " + entry.getValue());
         }
-    }
-
-    public void printProductStock(Product product) {
-        int quantity = stock.getOrDefault(product, 0);
-        System.out.println("Product: " + product.getName() + ", Quantity: " + quantity);
     }
 }

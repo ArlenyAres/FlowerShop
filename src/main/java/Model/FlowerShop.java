@@ -30,6 +30,9 @@ public class FlowerShop {
     public StockRepository getStockFromRepository() {
         return stockFromRepository;
     }
+    public double getStockValue() {
+        return stockValue;
+    }
 
     public void setName(String name){
         this.name = name;
@@ -44,22 +47,22 @@ public class FlowerShop {
             System.out.println("The stock is empty");
         } else {
             verifyStock(decorationStock,flowerStock,treeStock);
-            System.out.println("Decorations : " + decorationStock +
-                    "\nFlowers : " + flowerStock +
-                    "\nTrees : " + treeStock);
         }
     }
 
     public void verifyStock(int decorationStock, int flowerStock, int treeStock){
         for (Product product : stockFromRepository.getStock().keySet()){
-            if (product.getClass() == Decoration.class){
+            if (product instanceof Decoration){
                 decorationStock++;
-            } else if (product.getClass() == Flower.class) {
+            } else if (product instanceof Flower) {
                 flowerStock++;
-            } else if (product.getClass() == Tree.class) {
+            } else if (product instanceof Tree) {
                 treeStock++;
             }
         }
+        System.out.println("Decorations : " + decorationStock +
+                "\nFlowers : " + flowerStock +
+                "\nTrees : " + treeStock + "\n");
     }
 
 }
