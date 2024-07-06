@@ -65,7 +65,7 @@ public class Menu {
                 case 6 :
                     text = readString("what is the name of the flower shop?");
                     shop = findShop(admin, text);
-                    System.out.println(shop.getStockValue());
+                    System.out.println("The flower shop total value is: €" + shop.getStockValue());
                     break;
                 case 7 :
                     text = readString("what is the name of the flower shop?");
