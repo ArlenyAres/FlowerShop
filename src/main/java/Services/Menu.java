@@ -71,12 +71,16 @@ public class Menu {
                     text = readString("what is the name of the flower shop?");
                     shop = findShop(admin, text);
                     purchase = createPurchase(shop);
+                    shop.addPurchaseToHistory(purchase);
                     ticket = new Ticket(purchase);
                     ticket.createTicket();
                     break;
                 case 8 :
                     break;
                 case 9 :
+                    text = readString("what is the name of the flower shop?");
+                    shop = findShop(admin, text);
+                    System.out.println("The total earnings of the flower shop is: €" + shop.calculateTotalEarnings());
                     break;
                 case 0 :
                     System.out.println("Good Bye!");

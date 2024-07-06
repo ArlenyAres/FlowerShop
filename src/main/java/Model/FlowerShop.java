@@ -65,4 +65,16 @@ public class FlowerShop {
                 "\nFlowers : " + flowerStock +
                 "\nTrees : " + treeStock + "\n");
     }
+
+    public void addPurchaseToHistory(Purchase purchase) {
+        purchaseHistory.add(purchase);
+    }
+
+    public double calculateTotalEarnings() {
+        double total = 0.0;
+        for (Purchase purchase : purchaseHistory) {
+            total += purchase.calculateTotalPrice();
+        }
+        return total;
+    }
 }
