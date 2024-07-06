@@ -1,28 +1,27 @@
 package Database;
 
 
-import Model.Product;
-
 import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
-import com.mongodb.client.ListDatabasesIterable;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.*;
 import org.bson.BsonDocument;
 import org.bson.BsonInt64;
 import org.bson.Document;
+import org.bson.codecs.configuration.CodecProvider;
+import org.bson.codecs.configuration.CodecRegistries;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.conversions.Bson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.ConfigFile;
 
 
-import java.util.List;
 import java.util.Properties;
 
 
-public class MongoDBConnection extends Throwable implements ProductDataBase {
+public class MongoDBConnection extends Throwable {
 
     private static final Logger logger = LoggerFactory.getLogger(MongoDBConnection.class);
     private final ConnectionString connectionString;
@@ -35,7 +34,7 @@ public class MongoDBConnection extends Throwable implements ProductDataBase {
         try {
             ConfigFile configFile = new ConfigFile("mongodb.properties");
             properties = configFile.readPropertiesFile();
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.error("Error load confic File {}", e.getMessage());
             this.connectionString = null;
             return;
@@ -51,41 +50,48 @@ public class MongoDBConnection extends Throwable implements ProductDataBase {
         this.connectionString = new ConnectionString(uri);
     }
 
+    private boolean getPing(MongoDatabase database){
+
+        try {
+            Bson comand = new BsonDocument("ping", new BsonInt64(1));
+            Document result = database.runCommand(comand);
+
+            logger.info("MongoDB connection enable, Result data ping: " + result.toString());
+
+        } catch (MongoException e) {
+            logger.error("ERROR Connection Ping {}", e.getMessage());
+            return false;
+        }
+        return true;
+
+    }
+
 
     public boolean createConnect() throws MongoException {
 
         if (this.connectionString == null) {
-            logger.error( "Connection string is null, no exits" );
-            return false ;
+            logger.error("Connection string is null, no exits");
+            return false;
         }
 
         try {
             MongoClient mongoClient = MongoClients.create(this.connectionString);
 
             MongoDatabase database = mongoClient.getDatabase("admin");
-            Bson comand = new BsonDocument("ping", new BsonInt64(1));
-            Document result = database.runCommand(comand);
+            if (getPing(database)) {
+                this.client = mongoClient;
+                return true;
+            }
 
-            logger.info("MongoDB connection enable" + result.toString() );
-
-            this.client = mongoClient;
-
-            return true;
         } catch (MongoException e) {
             logger.error("ERROR{}", e.getMessage());
             throw e;
         }
+            return false;
 
     }
 
-    public void closeConection()  {
-        if (this.client != null) {
-            this.client.close();
-            logger.info("The connetion is CLOSED");
-        }
-    }
-
-    public void showInfoCluster(){
+    public void showInfoCluster() {
         if (this.client == null) {
             logger.warn("No connection established");
             return;
@@ -94,7 +100,7 @@ public class MongoDBConnection extends Throwable implements ProductDataBase {
         logger.info(String.valueOf(this.client.getClusterDescription()));
     }
 
-    public void showDataBase(){
+    public void showDataBase() {
         if (this.client == null) {
             logger.warn("No connection established");
             return;
@@ -109,8 +115,37 @@ public class MongoDBConnection extends Throwable implements ProductDataBase {
         }
     }
 
+    public MongoDatabase getDatabaseWhitCodec(String databaseName) throws MongoException {
+        if (this.client == null) {
+            if (!this.createConnect()) {
+                throw new MongoException("Cannot connect to MongoDB server");
+            }
+
+        }
+        CodecProvider pojoCoderProvider = PojoCodecProvider.builder().automatic(true).build();
+        CodecRegistry pojoCodecRegistry = CodecRegistries.fromProviders(MongoClientSettings.getDefaultCodecRegistry(),
+                CodecRegistries.fromProviders(pojoCoderProvider));
+
+        MongoDatabase database = this.client.getDatabase(databaseName).withCodecRegistry(pojoCodecRegistry);
+
+        if (!getPing(database)){
+            throw new MongoException("Cannot connect to MongoDB server");
+        }
+        return database;
+    }
+
+    public MongoCollection<?> getCollection(String databaseName, String colletionName, Class entidad) throws MongoException {
+        MongoDatabase database = getDatabaseWhitCodec(databaseName);
+        return database.getCollection(colletionName, entidad);
+    }
 
 
+    public void closeConnection() {
+        if (this.client != null) {
+            this.client.close();
+            logger.info("The connetion is CLOSED");
+        }
+    }
 
 
 
@@ -122,36 +157,4 @@ public class MongoDBConnection extends Throwable implements ProductDataBase {
 //        return instance;
 //    }
 
-
-    @Override
-    public void insertProduct(Product product) {
-//        Document document = new Document("id", product.getId())
-//                .append("name,", product.getName())
-//                .append("price", product.getPrice());
-//        collection.insertOne(document);
-    }
-
-    @Override
-    public Product findById(int id) {
-//        Document document = collection.find(eq("id", id)).first();
-//        if (document != null) {
-//            return new Product(document.getString("name"), document.getDouble("price"));
-//        }
-       return null;
-    }
-
-    @Override
-    public List<Product> findAllProducts() {
-        return List.of();
-    }
-
-    @Override
-    public void updateProduct(Product product) {
-
-    }
-
-    @Override
-    public void deleteProduct(int id) {
-
-    }
 }
