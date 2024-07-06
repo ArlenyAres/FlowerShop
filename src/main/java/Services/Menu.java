@@ -3,10 +3,12 @@ package Services;
 import Model.FlowerShop;
 import Model.FlowerShopManager;
 import Model.Product;
+import Model.Purchase;
 
 import static Services.Input.readInt;
 import static Services.Input.readString;
 import static Services.SubMenu.createProduct;
+import static Services.SubMenu.createPurchase;
 
 public class Menu {
 
@@ -14,6 +16,8 @@ public class Menu {
         FlowerShopManager admin = new FlowerShopManager();
         FlowerShop shop;
         Product product = null;
+        Purchase purchase = null;
+        Ticket ticket = null;
         int option = -1;
         int quantity = 0;
         String text = "";
@@ -64,6 +68,11 @@ public class Menu {
                     System.out.println(shop.getStockValue());
                     break;
                 case 7 :
+                    text = readString("what is the name of the flower shop?");
+                    shop = findShop(admin, text);
+                    purchase = createPurchase(shop);
+                    ticket = new Ticket(purchase);
+                    ticket.createTicket();
                     break;
                 case 8 :
                     break;

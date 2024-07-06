@@ -12,7 +12,7 @@ public class Ticket {
         this.purchase = purchase;
     }
 
-    /*public void createTicket() {
+    public void createTicket() {
         System.out.println("-------------------------------------------------------------");
         System.out.println("                    " + purchase.getFlowerShopName() + "                       ");
         System.out.println("                      Ticket                     ");
@@ -32,6 +32,6 @@ public class Ticket {
         }
         System.out.println("\nTOTAL: €" + purchase.calculateTotalPrice());
         System.out.println("\n--------------------------------------------------------------\n");
-    }*/
+    }
 }
 

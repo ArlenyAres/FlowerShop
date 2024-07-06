@@ -3,6 +3,7 @@ package Services;
 import Model.*;
 import static Services.Input.*;
 import static Services.Menu.findShop;
+import Exception.InsufficientStockException;
 
 public class SubMenu {
     public static void createProduct(FlowerShopManager admin) {
@@ -103,6 +104,61 @@ public class SubMenu {
             product = new Tree(name, price, height);
             shop.getStockFromRepository().addProduct(product, unit);
         }
+    }
+
+    public static Purchase createPurchase(FlowerShop shop) {
+        Purchase purchase = new Purchase(shop,shop.getStockFromRepository().getStock());
+        Product product = null;
+        String productName = "";
+        boolean buying = true;
+        int option = -1;
+        int quantity = 0;
+
+        do {
+            System.out.println("What do you want to do?\n " +
+                    "1. Add product to the cart\n " +
+                    "2. Remove product from the cart\n " +
+                    "3. Get total price of the purchase\n " +
+                    "0. Exit");
+            option = readInt("");
+
+            switch (option){
+                case 1 :
+                    productName = readString("Enter the name of the product : ");
+                    for (Product prod : shop.getStockFromRepository().getStock().keySet()){
+                        if (prod.getName().equalsIgnoreCase(productName)){
+                            product = prod;
+                        }
+                    }
+                    quantity = readInt("How many products?\n");
+                    try {
+                        purchase.addProductInPurchaseCart(product,quantity);
+                    } catch (InsufficientStockException e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
+                case 2 :
+                    productName = readString("Enter the name of the product : ");
+                    for (Product prod : shop.getStockFromRepository().getStock().keySet()){
+                        if (prod.getName().equalsIgnoreCase(productName)){
+                            product = prod;
+                        }
+                    }
+                    quantity = readInt("How many products?\n");
+                    purchase.removeProductFromPurchaseCart(product,quantity);
+                    break;
+                case 3 :
+                    System.out.println("Total of the purchase : " + purchase.calculateTotalPrice() + "\n");
+                    break;
+                case 0 :
+                    System.out.println("Good Bye!\n");
+                    buying = false;
+                    break;
+                default:
+                    System.out.println("Invalid option, try again\n");
+            }
+        } while (buying);
+        return purchase;
     }
 
 }

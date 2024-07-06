@@ -32,14 +32,7 @@ public class FlowerShopManager {
         shopList.add(shop);
     }
 
-/*    public void manageStock(Product product, int quantity) {
-        stockRepository.addProduct(product, quantity);
-    }
-
-    public double getTotalValue() {
-        return stockRepository.getTotalStockValue();
-    }
-
+/*
     public void createPurchaseTicket(Map<Product, Integer> products) {
         Purchase purchase = new Purchase(flowerShop, products);
         Ticket ticket = new Ticket(purchase);
@@ -51,14 +44,6 @@ public class FlowerShopManager {
 
     public double showTotalPurchaseValue() {
         return totalEarnings;
-    }
-
-    public void showStock() {
-        stockRepository.printStock();
-    }
-
-    public void showProducts(Product product) {
-        stockRepository.printProductStock(product);
     }
 
     public void showHistory() {
