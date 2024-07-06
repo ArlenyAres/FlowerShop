@@ -13,26 +13,52 @@ import org.bson.BsonDocument;
 import org.bson.BsonInt64;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import utils.ConfigFile;
 
-import java.sql.SQLException;
+
 import java.util.List;
+import java.util.Properties;
 
-import static com.mongodb.client.model.Filters.eq;
 
 public class MongoDBConnection extends Throwable implements ProductDataBase {
 
+    private static final Logger logger = LoggerFactory.getLogger(MongoDBConnection.class);
     private final ConnectionString connectionString;
-    private MongoClient client;
+    private MongoClient client = null;
 
 
-    public MongoDBConnection(String host, int port, String user, String password) {
-        String uri = String.format("mongodb://%s:%s@%s:%d", user, password, host, port);
+    public MongoDBConnection() {
+        Properties properties = null;
+
+        try {
+            ConfigFile configFile = new ConfigFile("mongodb.properties");
+            properties = configFile.readPropertiesFile();
+        } catch (Exception e){
+            logger.error("Error load confic File {}", e.getMessage());
+            this.connectionString = null;
+            return;
+        }
+
+        String host = properties.getProperty("host");
+        String port = properties.getProperty("port");
+        String user = properties.getProperty("user");
+        String password = properties.getProperty("password");
+
+
+        String uri = String.format("mongodb://%s:%s@%s:%s", user, password, host, port);
         this.connectionString = new ConnectionString(uri);
-        this.client = null;
     }
 
 
     public boolean createConnect() throws MongoException {
+
+        if (this.connectionString == null) {
+            logger.error( "Connection string is null, no exits" );
+            return false ;
+        }
+
         try {
             MongoClient mongoClient = MongoClients.create(this.connectionString);
 
@@ -40,13 +66,13 @@ public class MongoDBConnection extends Throwable implements ProductDataBase {
             Bson comand = new BsonDocument("ping", new BsonInt64(1));
             Document result = database.runCommand(comand);
 
-            System.out.println("MongoDB connection enable" + result.toString() );
+            logger.info("MongoDB connection enable" + result.toString() );
 
             this.client = mongoClient;
 
             return true;
         } catch (MongoException e) {
-            System.out.println( "ERROR" + e.getMessage() );
+            logger.error("ERROR{}", e.getMessage());
             throw e;
         }
 
@@ -55,25 +81,25 @@ public class MongoDBConnection extends Throwable implements ProductDataBase {
     public void closeConection()  {
         if (this.client != null) {
             this.client.close();
-            System.out.println("The connetion is CLOSED");
+            logger.info("The connetion is CLOSED");
         }
     }
 
     public void showInfoCluster(){
         if (this.client == null) {
-            System.out.println("No connection established");
+            logger.warn("No connection established");
             return;
         }
-        System.out.println("Showing cluster info");
-        System.out.println(this.client.getClusterDescription());
+        logger.info("\nShowing cluster info\n");
+        logger.info(String.valueOf(this.client.getClusterDescription()));
     }
 
     public void showDataBase(){
         if (this.client == null) {
-            System.out.println("No connection established");
+            logger.warn("No connection established");
             return;
         }
-        System.out.println("Showing databases");
+        logger.info("\nShowing databases");
 
         ListDatabasesIterable<Document> databases = this.client.listDatabases();
         int i = 1;
@@ -82,6 +108,12 @@ public class MongoDBConnection extends Throwable implements ProductDataBase {
             i++;
         }
     }
+
+
+
+
+
+
 
 //    public static synchronized MongoDBConnection getInstance() {
 //        if( instance == null) {

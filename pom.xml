@@ -14,7 +14,7 @@
             <artifactId>mongodb-driver-sync</artifactId>
             <version>4.7.1</version>
         </dependency>
-        <!-- Eliminada la dependencia de slf4j-api -->
+
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
