@@ -6,8 +6,8 @@ public class Decoration extends Product {
     DecorationType type;
 
     // Constructor
-    public Decoration (String name, double price, DecorationType type){
-        super(name, price);
+    public Decoration (String name, String id, double price, DecorationType type){
+        super(name, id, price);
         this.type = type;
     }
 

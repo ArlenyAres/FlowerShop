@@ -56,8 +56,8 @@ public class FlowerShop {
                 decorationStock++;
             } else if (product instanceof Flower) {
                 flowerStock++;
-            } else if (product instanceof Tree) {
-                treeStock++;
+//            } else if (product instanceof Tree) {
+//                treeStock++;
             }
         }
         System.out.println("Decorations : " + decorationStock +

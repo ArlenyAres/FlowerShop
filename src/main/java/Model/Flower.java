@@ -6,8 +6,8 @@ public class Flower extends Product {
     private String color;
 
     // Constructor
-    public Flower (String name, double price, String color) {
-        super(name, price);
+    public Flower (String name, String id, double price, String color) {
+        super(name, id, price);
         this.color = color;
     }
 
