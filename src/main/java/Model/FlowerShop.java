@@ -34,6 +34,14 @@ public class FlowerShop {
         return stockValue;
     }
 
+    public double getTotalEarnings() {
+        return totalEarnings;
+    }
+
+    public void setTotalEarnings(double totalEarnings) {
+        this.totalEarnings = totalEarnings;
+    }
+
     public void setName(String name){
         this.name = name;
     }

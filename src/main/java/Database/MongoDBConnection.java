@@ -22,7 +22,7 @@ import java.util.Properties;
 public class MongoDBConnection {
 
     private static final Logger logger = LoggerFactory.getLogger(MongoDBConnection.class);
-    private static MongoDBConnection instance;  // Instancia única
+    private static MongoDBConnection instance;
     private final ConnectionString connectionString;
     private MongoClient client = null;
 
