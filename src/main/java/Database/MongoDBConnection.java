@@ -1,41 +1,40 @@
 package Database;
 
-
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.MongoException;
-import com.mongodb.client.*;
-import org.bson.BsonDocument;
-import org.bson.BsonInt64;
+import com.mongodb.client.ListDatabasesIterable;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
-import org.bson.conversions.Bson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.ConfigFile;
 
-
 import java.util.Properties;
 
-
-public class MongoDBConnection extends Throwable {
+public class MongoDBConnection {
 
     private static final Logger logger = LoggerFactory.getLogger(MongoDBConnection.class);
+    private static MongoDBConnection instance;  // Instancia única
     private final ConnectionString connectionString;
     private MongoClient client = null;
 
-
-    public MongoDBConnection() {
+    // Constructor privado para evitar las instancias adicionales
+    private MongoDBConnection() {
         Properties properties = null;
 
         try {
             ConfigFile configFile = new ConfigFile("mongodb.properties");
             properties = configFile.readPropertiesFile();
         } catch (Exception e) {
-            logger.error("Error load confic File {}", e.getMessage());
+            logger.error("Error load config file {}", e.getMessage());
             this.connectionString = null;
             return;
         }
@@ -45,50 +44,56 @@ public class MongoDBConnection extends Throwable {
         String user = properties.getProperty("user");
         String password = properties.getProperty("password");
 
-
         String uri = String.format("mongodb://%s:%s@%s:%s", user, password, host, port);
         this.connectionString = new ConnectionString(uri);
     }
 
-    private boolean getPing(MongoDatabase database){
+    //  para obtener la instancia de conexion de la clase
+    public static synchronized MongoDBConnection getInstance() {
+        if (instance == null) {
+            instance = new MongoDBConnection();
+        }
+        return instance;
+    }
+
+    public boolean createConnect() throws MongoException {
+        if (this.connectionString == null) {
+            logger.error("Connection string is null, no exists");
+            return false;
+        }
 
         try {
-            Bson comand = new BsonDocument("ping", new BsonInt64(1));
-            Document result = database.runCommand(comand);
+            CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
+            CodecRegistry pojoCodecRegistry = CodecRegistries.fromRegistries(
+                    MongoClientSettings.getDefaultCodecRegistry(),
+                    CodecRegistries.fromProviders(pojoCodecProvider)
+            );
 
+            MongoClientSettings settings = MongoClientSettings.builder()
+                    .applyConnectionString(this.connectionString)
+                    .codecRegistry(pojoCodecRegistry)
+                    .build();
+
+            this.client = MongoClients.create(settings);
+            MongoDatabase database = this.client.getDatabase("admin");
+
+            return getPing(database);
+
+        } catch (MongoException e) {
+            logger.error("ERROR {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    private boolean getPing(MongoDatabase database) {
+        try {
+            Document result = database.runCommand(new Document("ping", 1));
             logger.info("MongoDB connection enable, Result data ping: " + result.toString());
-
         } catch (MongoException e) {
             logger.error("ERROR Connection Ping {}", e.getMessage());
             return false;
         }
         return true;
-
-    }
-
-
-    public boolean createConnect() throws MongoException {
-
-        if (this.connectionString == null) {
-            logger.error("Connection string is null, no exits");
-            return false;
-        }
-
-        try {
-            MongoClient mongoClient = MongoClients.create(this.connectionString);
-
-            MongoDatabase database = mongoClient.getDatabase("admin");
-            if (getPing(database)) {
-                this.client = mongoClient;
-                return true;
-            }
-
-        } catch (MongoException e) {
-            logger.error("ERROR{}", e.getMessage());
-            throw e;
-        }
-            return false;
-
     }
 
     public void showInfoCluster() {
@@ -110,51 +115,29 @@ public class MongoDBConnection extends Throwable {
         ListDatabasesIterable<Document> databases = this.client.listDatabases();
         int i = 1;
         for (Document document : databases) {
-            System.out.println(String.format("%d-) %s", i, document.toString()));
+            logger.info(String.format("%d-) %s", i, document.toString()));
             i++;
         }
     }
 
-    public MongoDatabase getDatabaseWhitCodec(String databaseName) throws MongoException {
+    public <T> MongoCollection<T> getPOJOCollection(String databaseName, String collectionName, Class<T> clazz) throws MongoException {
+        MongoDatabase database = getDatabase(databaseName);
+        return database.getCollection(collectionName, clazz);
+    }
+
+    public MongoDatabase getDatabase(String databaseName) throws MongoException {
         if (this.client == null) {
             if (!this.createConnect()) {
                 throw new MongoException("Cannot connect to MongoDB server");
             }
-
         }
-        CodecProvider pojoCoderProvider = PojoCodecProvider.builder().automatic(true).build();
-        CodecRegistry pojoCodecRegistry = CodecRegistries.fromProviders(MongoClientSettings.getDefaultCodecRegistry(),
-                CodecRegistries.fromProviders(pojoCoderProvider));
-
-        MongoDatabase database = this.client.getDatabase(databaseName).withCodecRegistry(pojoCodecRegistry);
-
-        if (!getPing(database)){
-            throw new MongoException("Cannot connect to MongoDB server");
-        }
-        return database;
+        return this.client.getDatabase(databaseName);
     }
-
-    public MongoCollection<?> getCollection(String databaseName, String colletionName, Class entidad) throws MongoException {
-        MongoDatabase database = getDatabaseWhitCodec(databaseName);
-        return database.getCollection(colletionName, entidad);
-    }
-
 
     public void closeConnection() {
         if (this.client != null) {
             this.client.close();
-            logger.info("The connetion is CLOSED");
+            logger.info("The connection is CLOSED");
         }
     }
-
-
-
-
-//    public static synchronized MongoDBConnection getInstance() {
-//        if( instance == null) {
-//            instance = new MongoDBConnection();
-//        }
-//        return instance;
-//    }
-
 }

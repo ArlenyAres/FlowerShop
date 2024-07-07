@@ -1,8 +1,11 @@
 package Model;
 
+import org.bson.types.ObjectId;
+
 public class Product {
 
     // Attributes
+
     private int id;
     private static int nextId = 1;
     private String name;
@@ -27,6 +30,7 @@ public class Product {
     public double getPrice() {
         return price;
     }
+
 
     // Setters
     public void setName(String name) {
