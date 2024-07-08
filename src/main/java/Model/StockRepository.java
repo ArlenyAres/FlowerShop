@@ -37,7 +37,7 @@ public class StockRepository {
             }
         }
     }
-    
+
     public double getTotalStockValue() {
         double totalValue = 0.0;
         for (Map.Entry<Product, Integer> entry : stock.entrySet()) {
