@@ -26,7 +26,7 @@ public class MongoDBService {
         MongoCollection<Document> collection = database.getCollection(FLOWERS_SHOP_COLLECTION);
         Document doc = new Document("name", flowerShop.getName())
                 .append("stockValue", flowerShop.getStockValue())
-                .append("totalEarnings",flowerShop.getTotalEarnings());
+//                .append("totalEarnings",flowerShop.getTotalEarnings());
         collection.insertOne(doc);
 
     }

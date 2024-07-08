@@ -143,6 +143,7 @@ public class SubMenu {
                 default:
                     System.out.println("Invalid option, try again\n");
             }
+
         } while (buying);
         return purchase;
     }
