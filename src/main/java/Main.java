@@ -42,8 +42,8 @@ public class Main {
 
         // Ejemplo de como insertar un articulos en la coleccion Flower
         try {
-            flowers.insertOne(new Flower("rosa", 3, "rojo"));
-            flowers.insertOne(new Flower("lirio", 8, "blanco"));
+            flowers.insertOne(new Flower("margarita", 3, "amarilla"));
+            flowers.insertOne(new Flower("petunia", 8, "blanco"));
             logger.info("Articulos insertados correctamente en la coleccion Flower");
         } catch (MongoException e) {
             logger.error("Error al insertar articulos en la coleccion: " + e.getMessage());
