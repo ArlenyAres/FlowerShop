@@ -6,5 +6,7 @@ public class Main {
         MongoDBService mongoDBService = new MongoDBService();
         Menu menu = new Menu(mongoDBService);
         menu.start();
+
+
     }
 }
