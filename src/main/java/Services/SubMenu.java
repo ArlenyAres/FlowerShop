@@ -41,43 +41,55 @@ public class SubMenu {
     }
 
     public static void createDecoration(String shopName, int quantity, FlowerShopManager admin){
+        Decoration product;
         FlowerShop shop = findShop(admin, shopName);
-        String productName = readString("Name of the decoration? ");
-        double price = readDouble("How much is it?\n");
-        int type = readInt("What type of decoration?\n 1. WOOD\n 2. PLASTIC\n");
-        Decoration.DecorationType decorationType = (type == 1) ? Decoration.DecorationType.WOOD : Decoration.DecorationType.PLASTIC;
+        int type = 0;
+        String productName = "";
+        double price = 0d;
 
-        for (int i = 0; i < quantity; i++) {
-            String id = productName + "-" + decorationType + "-" + price;  // Generate consistent ID based on product properties
-            Decoration product = new Decoration(productName, id, price, decorationType);
-            shop.getStockFromRepository().addProduct(product, 1);
+        productName = readString("Name of the decoration? ");
+        price = readDouble("How much is it?\n");
+        type = readInt("What type of decoration?\n 1. WOOD\n 2. PLASTIC\n");
+
+        if (type == 1){
+            product = new Decoration(productName, price, Decoration.DecorationType.WOOD);
+            shop.getStockFromRepository().addProduct(product, quantity);
+        } else if (type == 2) {
+            product = new Decoration(productName, price, Decoration.DecorationType.PLASTIC);
+            shop.getStockFromRepository().addProduct(product, quantity);
+        } else {
+            System.out.println("Unable to create the product, please verify the product info! ");
         }
     }
 
     public static void createFlower(String shopName, int quantity, FlowerShopManager admin){
+        Flower product;
         FlowerShop shop = findShop(admin, shopName);
-        String name = readString("Name of the flower? ");
-        double price = readDouble("How much is it? \n");
-        String color = readString("Color of the flower?");
+        String name = "";
+        String color = "";
+        double price = 0d;
 
-        for (int i = 0; i < quantity; i++) {
-            String id = name + "-" + color + "-" + price;  // Generate consistent ID based on product properties
-            Flower product = new Flower(name, id, price, color);
-            shop.getStockFromRepository().addProduct(product, 1);
-        }
+        name = readString("Name of the flower? ");
+        price = readDouble("How much is it? \n");
+        color = readString("Color of the flower?");
+
+        product = new Flower(name,price,color);
+        shop.getStockFromRepository().addProduct(product, quantity);
     }
 
     public static void createTree(String shopName, int quantity, FlowerShopManager admin){
+        Tree product;
         FlowerShop shop = findShop(admin, shopName);
-        String name = readString("Name of the tree? ");
-        double price = readDouble("How much is it? \n");
-        double height = readDouble("What is the height of the tree\n");
+        String name = "";
+        double price = 0d;
+        double height = 0d;
 
-        for (int i = 0; i < quantity; i++) {
-            String id = name + "-" + height + "-" + price;  // Generate consistent ID based on product properties
-            Tree product = new Tree(name, id, price, height);
-            shop.getStockFromRepository().addProduct(product, 1);
-        }
+        name = readString("Name of the tree? ");
+        price = readDouble("How much is it? \n");
+        height = readDouble("What is the height of the tree\n");
+
+        product = new Tree(name, price, height);
+        shop.getStockFromRepository().addProduct(product, quantity);
     }
 
     public static Purchase createPurchase(FlowerShop shop) {

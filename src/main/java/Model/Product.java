@@ -1,6 +1,7 @@
 package Model;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class Product {
 
@@ -10,9 +11,9 @@ public class Product {
     private double price;
 
     // Constructor
-    public Product(String name, String productID, double price) {
+    public Product(String name, double price) {
         this.name = name;
-        this.productID = productID;
+        this.productID = UUID.randomUUID().toString();
         this.price = price;
     }
 
