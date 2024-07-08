@@ -50,7 +50,7 @@ public class Menu {
                 case 3 :
                     text = readString("What is the name of the flower shop?");
                     shop = findShop(admin, text);
-                    shop.getStockFromRepository().removeProducts();
+                    shop.getStockFromRepository().removeProducts(shop.getStockFromRepository().getStock());
                     break;
                 case 4 :
                     text = readString("what is the name of the flower shop?");
@@ -65,18 +65,22 @@ public class Menu {
                 case 6 :
                     text = readString("what is the name of the flower shop?");
                     shop = findShop(admin, text);
-                    System.out.println(shop.getStockValue());
+                    System.out.println("The flower shop total value is: €" + shop.getStockValue());
                     break;
                 case 7 :
                     text = readString("what is the name of the flower shop?");
                     shop = findShop(admin, text);
                     purchase = createPurchase(shop);
+                    shop.addPurchaseToHistory(purchase);
                     ticket = new Ticket(purchase);
                     ticket.createTicket();
                     break;
                 case 8 :
                     break;
                 case 9 :
+                    text = readString("what is the name of the flower shop?");
+                    shop = findShop(admin, text);
+                    System.out.println("The total earnings of the flower shop is: €" + shop.calculateTotalEarnings());
                     break;
                 case 0 :
                     System.out.println("Good Bye!");

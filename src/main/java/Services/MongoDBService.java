@@ -115,7 +115,7 @@ public class MongoDBService {
 
         public void updateProduct(Product product) {
         MongoCollection<Document> collection = database.getCollection(PRODUCT_COLLECTION);
-        Document query = new Document("id", product.getId());
+        Document query = new Document("id", product.getProductID());
         //Document query = new Document("_id", new ObjectId(product.getId()));
             Document update = new Document("$set", new Document("name", product.getName()))
                     .append("price", product.getPrice());

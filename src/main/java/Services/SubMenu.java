@@ -7,20 +7,16 @@ import Exception.InsufficientStockException;
 
 public class SubMenu {
     public static void createProduct(FlowerShopManager admin) {
-        String shopName = "";
-        int option = -1;
-        int quantity = 0;
+        String shopName = readString("What is the name of the flower shop?");
+        int quantity = readInt("How many products? \n");
         boolean working = true;
-
-        shopName = readString("What is the name of the flower shop?");
-        quantity = readInt("How many products? \n");
-        do {
+        while (working) {
             System.out.println("Products : \n " +
                     "1. Decoration\n " +
                     "2. Flower\n " +
                     "3. Tree\n " +
                     "0. Exit");
-            option = readInt("What type of product would you like to add?\n");
+            int option = readInt("What type of product would you like to add?\n");
 
             switch (option) {
                 case 1:
@@ -41,15 +37,13 @@ public class SubMenu {
                 default:
                     System.out.println("Invalid option, try again");
             }
-
-        } while (working);
+        }
     }
 
     public static void createDecoration(String shopName, int quantity, FlowerShopManager admin){
         Decoration product;
         FlowerShop shop = findShop(admin, shopName);
         int type = 0;
-        int unit = 1;
         String productName = "";
         double price = 0d;
 
@@ -57,16 +51,14 @@ public class SubMenu {
         price = readDouble("How much is it?\n");
         type = readInt("What type of decoration?\n 1. WOOD\n 2. PLASTIC\n");
 
-        for (int i = 0; i < quantity; i++) {
-            if (type == 1){
-                product = new Decoration(productName, price, Decoration.DecorationType.WOOD);
-                shop.getStockFromRepository().addProduct(product, unit);
-            } else if (type == 2) {
-                product = new Decoration(productName, price, Decoration.DecorationType.PLASTIC);
-                shop.getStockFromRepository().addProduct(product, unit);
-            } else {
-                System.out.println("Unable to create the product, please verify the product info! ");
-            }
+        if (type == 1){
+            product = new Decoration(productName, price, Decoration.DecorationType.WOOD);
+            shop.getStockFromRepository().addProduct(product, quantity);
+        } else if (type == 2) {
+            product = new Decoration(productName, price, Decoration.DecorationType.PLASTIC);
+            shop.getStockFromRepository().addProduct(product, quantity);
+        } else {
+            System.out.println("Unable to create the product, please verify the product info! ");
         }
     }
 
@@ -76,16 +68,13 @@ public class SubMenu {
         String name = "";
         String color = "";
         double price = 0d;
-        int unit = 1;
 
         name = readString("Name of the flower? ");
         price = readDouble("How much is it? \n");
         color = readString("Color of the flower?");
 
-        for (int i = 0; i < quantity; i++) {
-            product = new Flower(name,price,color);
-            shop.getStockFromRepository().addProduct(product, unit);
-        }
+        product = new Flower(name,price,color);
+        shop.getStockFromRepository().addProduct(product, quantity);
     }
 
     public static void createTree(String shopName, int quantity, FlowerShopManager admin){
@@ -94,16 +83,13 @@ public class SubMenu {
         String name = "";
         double price = 0d;
         double height = 0d;
-        int unit = 1;
 
         name = readString("Name of the tree? ");
         price = readDouble("How much is it? \n");
         height = readDouble("What is the height of the tree\n");
 
-        for (int i = 0; i < quantity; i++) {
-            product = new Tree(name, price, height);
-            shop.getStockFromRepository().addProduct(product, unit);
-        }
+        product = new Tree(name, price, height);
+        shop.getStockFromRepository().addProduct(product, quantity);
     }
 
     public static Purchase createPurchase(FlowerShop shop) {
@@ -134,7 +120,7 @@ public class SubMenu {
                     try {
                         purchase.addProductInPurchaseCart(product,quantity);
                     } catch (InsufficientStockException e) {
-                        throw new RuntimeException(e);
+                        System.out.println(e.getMessage());
                     }
                     break;
                 case 2 :
