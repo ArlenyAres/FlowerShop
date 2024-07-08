@@ -37,34 +37,7 @@ public class StockRepository {
             }
         }
     }
-
-    public void removeProcess(String productName, int counter, int quantity){
-        Iterator<Map.Entry<Product, Integer>> iterator;
-        Map.Entry<Product, Integer> entry;
-        Product productToRemove;
-
-        iterator = stock.entrySet().iterator();
-
-        while (iterator.hasNext() && quantity > 0) {
-            entry = iterator.next();
-            productToRemove = entry.getKey();
-            if (productToRemove.getName().equalsIgnoreCase(productName)) {
-                iterator.remove();
-                quantity--;
-                counter++;
-            }
-        }
-        removeMessage(counter);
-    }
-
-    public void removeMessage(int counter) {
-        if (counter == 0){
-            System.out.println("Product not found\n");
-        } else {
-            System.out.println("Products removed from the stock : " + counter + "\n");
-        }
-    }
-
+    
     public double getTotalStockValue() {
         double totalValue = 0.0;
         for (Map.Entry<Product, Integer> entry : stock.entrySet()) {
