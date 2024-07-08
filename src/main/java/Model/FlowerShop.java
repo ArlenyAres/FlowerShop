@@ -9,45 +9,46 @@ public class FlowerShop {
     private static int nextId = 1;
     private String name;
     private StockRepository stockFromRepository;
-    private double stockValue;
     private ArrayList<Purchase> purchaseHistory;
     private double totalEarnings;
 
-    public FlowerShop (String name) {
+    public FlowerShop(String name) {
         this.id = nextId++;
         this.name = name;
         this.stockFromRepository = new StockRepository();
-        this.stockValue = stockFromRepository.getTotalStockValue();
         this.purchaseHistory = new ArrayList<>();
         this.totalEarnings = 0.0;
     }
 
-    public int getId(){
+    public int getId() {
         return id;
     }
-    public String getName(){
+
+    public String getName() {
         return name;
     }
+
     public StockRepository getStockFromRepository() {
         return stockFromRepository;
     }
+
     public double getStockValue() {
-        return stockValue;
+        return stockFromRepository.getTotalStockValue();
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void showStock(){
+    public void showStock() {
         int decorationStock = 0;
         int flowerStock = 0;
         int treeStock = 0;
 
-        if (stockFromRepository.getStock().isEmpty()){
+        if (stockFromRepository.getStock().isEmpty()) {
             System.out.println("The stock is empty");
         } else {
-            verifyStock(decorationStock,flowerStock,treeStock);
+            verifyStock(decorationStock, flowerStock, treeStock);
         }
     }
 
@@ -66,4 +67,15 @@ public class FlowerShop {
                 "\nTrees : " + treeStock + "\n");
     }
 
+    public void addPurchaseToHistory(Purchase purchase) {
+        purchaseHistory.add(purchase);
+    }
+
+    public double calculateTotalEarnings() {
+        double total = 0.0;
+        for (Purchase purchase : purchaseHistory) {
+            total += purchase.calculateTotalPrice();
+        }
+        return total;
+    }
 }

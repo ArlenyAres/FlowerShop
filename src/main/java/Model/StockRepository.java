@@ -1,11 +1,10 @@
 package Model;
 
+import Services.Input;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import static Services.Input.readInt;
-import static Services.Input.readString;
 
 public class StockRepository {
     private Map<Product, Integer> stock;
@@ -23,8 +22,8 @@ public class StockRepository {
     }
 
     public void removeProducts(Map<Product, Integer> products) {
-        String productName = readString("Name of the product?");
-        int quantityToRemove = readInt("How many product?");
+        String productName = Input.readString("Name of the product?");
+        int quantityToRemove = Input.readInt("How many product?");
 
         for (Map.Entry<Product, Integer> entry : products.entrySet()) {
             if (entry.getKey().getName().equalsIgnoreCase(productName)){

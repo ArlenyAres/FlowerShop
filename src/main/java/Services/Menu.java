@@ -44,7 +44,8 @@ public class Menu {
                     System.out.println("The new flower shop " + text + " was created!\n");
                     break;
                 case 2 :
-                    createProduct(admin);
+                    shop = flowerShopList(admin);
+                    createProduct(shop);
                     System.out.println("The products were added to the stock");
                     break;
                 case 3 :
@@ -65,18 +66,22 @@ public class Menu {
                 case 6 :
                     text = readString("what is the name of the flower shop?");
                     shop = findShop(admin, text);
-                    System.out.println(shop.getStockValue());
+                    System.out.println("The flower shop total value is: €" + shop.getStockValue());
                     break;
                 case 7 :
                     text = readString("what is the name of the flower shop?");
                     shop = findShop(admin, text);
                     purchase = createPurchase(shop);
+                    shop.addPurchaseToHistory(purchase);
                     ticket = new Ticket(purchase);
                     ticket.createTicket();
                     break;
                 case 8 :
                     break;
                 case 9 :
+                    text = readString("what is the name of the flower shop?");
+                    shop = findShop(admin, text);
+                    System.out.println("The total earnings of the flower shop is: €" + shop.calculateTotalEarnings());
                     break;
                 case 0 :
                     System.out.println("Good Bye!");
@@ -94,6 +99,27 @@ public class Menu {
         for (int i = 0; i < admin.getShopList().size(); i++) {
             if (admin.getShopList().get(i).getName().equalsIgnoreCase(shopName)){
                 shop = admin.getShopList().get(i);
+            }
+        }
+        return shop;
+    }
+
+    public static FlowerShop flowerShopList(FlowerShopManager admin){
+        FlowerShop shop = null;
+        int flowerShop = -1;
+        boolean correct = false;
+
+        System.out.println("Choose a flower shop : ");
+        for (int i = 0; i < admin.getShopList().size(); i++) {
+            System.out.print((i + 1) + ". " + admin.getShopList().get(i).getName() + "\n");
+        }
+        while (!correct){
+            flowerShop = readInt("");
+            if (flowerShop <= 0 || flowerShop > admin.getShopList().size()){
+                System.out.println("Invalid option, enter a valid shop");
+            } else {
+                shop = admin.getShopList().get(flowerShop-1);
+                correct = true;
             }
         }
         return shop;

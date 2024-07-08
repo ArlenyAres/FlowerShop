@@ -6,33 +6,28 @@ import static Services.Menu.findShop;
 import Exception.InsufficientStockException;
 
 public class SubMenu {
-    public static void createProduct(FlowerShopManager admin) {
-        String shopName = "";
-        int option = -1;
-        int quantity = 0;
+    public static void createProduct(FlowerShop shop) {
+        int quantity = readInt("How many products? \n");
         boolean working = true;
-
-        shopName = readString("What is the name of the flower shop?");
-        quantity = readInt("How many products? \n");
-        do {
+        while (working) {
             System.out.println("Products : \n " +
                     "1. Decoration\n " +
                     "2. Flower\n " +
                     "3. Tree\n " +
                     "0. Exit");
-            option = readInt("What type of product would you like to add?\n");
+            int option = readInt("What type of product would you like to add?\n");
 
             switch (option) {
                 case 1:
-                    createDecoration(shopName, quantity, admin);
+                    createDecoration(shop, quantity);
                     working = false;
                     break;
                 case 2:
-                    createFlower(shopName, quantity, admin);
+                    createFlower(shop, quantity);
                     working = false;
                     break;
                 case 3:
-                    createTree(shopName, quantity, admin);
+                    createTree(shop, quantity);
                     working = false;
                     break;
                 case 0:
@@ -41,13 +36,11 @@ public class SubMenu {
                 default:
                     System.out.println("Invalid option, try again");
             }
-
-        } while (working);
+        }
     }
 
-    public static void createDecoration(String shopName, int quantity, FlowerShopManager admin){
+    public static void createDecoration(FlowerShop shop, int quantity){
         Decoration product;
-        FlowerShop shop = findShop(admin, shopName);
         int type = 0;
         String productName = "";
         double price = 0d;
@@ -68,9 +61,8 @@ public class SubMenu {
 
     }
 
-    public static void createFlower(String shopName, int quantity, FlowerShopManager admin){
+    public static void createFlower(FlowerShop shop, int quantity){
         Flower product;
-        FlowerShop shop = findShop(admin, shopName);
         String name = "";
         String color = "";
         double price = 0d;
@@ -83,9 +75,8 @@ public class SubMenu {
         shop.getStockFromRepository().addProduct(product, quantity);
     }
 
-    public static void createTree(String shopName, int quantity, FlowerShopManager admin){
+    public static void createTree(FlowerShop shop, int quantity){
         Tree product;
-        FlowerShop shop = findShop(admin, shopName);
         String name = "";
         double price = 0d;
         double height = 0d;
@@ -126,7 +117,7 @@ public class SubMenu {
                     try {
                         purchase.addProductInPurchaseCart(product,quantity);
                     } catch (InsufficientStockException e) {
-                        throw new RuntimeException(e);
+                        System.out.println(e.getMessage());
                     }
                     break;
                 case 2 :
