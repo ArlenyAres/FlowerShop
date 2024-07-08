@@ -1,11 +1,10 @@
 package Model;
 
+import Services.Input;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import static Services.Input.readInt;
-import static Services.Input.readString;
 
 public class StockRepository {
     private Map<Product, Integer> stock;
@@ -22,15 +21,21 @@ public class StockRepository {
         stock.put(product, stock.getOrDefault(product, 0) + quantity);
     }
 
-    public void removeProducts() { //(Map<Product, Integer> products)
-        String productName = "";
-        int counter = 0;
-        int quantity = 0;
+    public void removeProducts(Map<Product, Integer> products) {
+        String productName = Input.readString("Name of the product?");
+        int quantityToRemove = Input.readInt("How many product?");
 
-        productName = readString("Name of the product? ");
-        quantity = readInt("How many products? \n");
-
-        removeProcess(productName, counter, quantity);
+        for (Map.Entry<Product, Integer> entry : products.entrySet()) {
+            if (entry.getKey().getName().equalsIgnoreCase(productName)){
+                if (entry.getValue() < quantityToRemove){
+                    System.out.println("The quantity to remove is higher than the one in the stock\n " +
+                            "Current stock : " + entry.getValue());
+                } else {
+                    stock.put(entry.getKey(), entry.getValue() - quantityToRemove);
+                    System.out.println("Stock updated!");
+                }
+            }
+        }
     }
 
     public void removeProcess(String productName, int counter, int quantity){
