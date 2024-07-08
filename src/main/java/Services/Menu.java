@@ -50,7 +50,7 @@ public class Menu {
                 case 3 :
                     text = readString("What is the name of the flower shop?");
                     shop = findShop(admin, text);
-                    shop.getStockFromRepository().removeProducts();
+                    shop.getStockFromRepository().removeProducts(shop.getStockFromRepository().getStock());
                     break;
                 case 4 :
                     text = readString("what is the name of the flower shop?");

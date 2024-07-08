@@ -1,6 +1,7 @@
 package Model;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class FlowerShop {
 
@@ -51,13 +52,13 @@ public class FlowerShop {
     }
 
     public void verifyStock(int decorationStock, int flowerStock, int treeStock){
-        for (Product product : stockFromRepository.getStock().keySet()){
-            if (product instanceof Decoration){
-                decorationStock++;
-            } else if (product instanceof Flower) {
-                flowerStock++;
-            } else if (product instanceof Tree) {
-                treeStock++;
+        for (Map.Entry<Product, Integer> entry : stockFromRepository.getStock().entrySet()){
+            if (entry.getKey() instanceof Decoration){
+                decorationStock += entry.getValue();
+            } else if (entry.getKey() instanceof Flower) {
+                flowerStock += entry.getValue();
+            } else if (entry.getKey() instanceof Tree) {
+                treeStock += entry.getValue();
             }
         }
         System.out.println("Decorations : " + decorationStock +

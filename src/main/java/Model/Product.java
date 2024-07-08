@@ -1,23 +1,24 @@
 package Model;
 
+import java.util.UUID;
+
 public class Product {
 
     // Attributes
-    private int id;
-    private static int nextId = 1;
+    private String productId;
     private String name;
     private double price;
 
     // Constructor
     public Product(String name, double price) {
-        this.id = nextId++;
+        this.productId = String.valueOf(UUID.randomUUID());
         this.name = name;
         this.price = price;
     }
 
     // Getters
-    public int getId() {
-        return id;
+    public String getProductId() {
+        return productId;
     }
 
     public String getName() {
