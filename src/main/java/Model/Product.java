@@ -5,20 +5,20 @@ import java.util.Objects;
 public class Product {
 
     // Attributes
-    private String id;
+    private String productID;
     private String name;
     private double price;
 
     // Constructor
-    public Product(String name, String id, double price) {
+    public Product(String name, String productID, double price) {
         this.name = name;
-        this.id = id;
+        this.productID = productID;
         this.price = price;
     }
 
     // Getters
-    public String getId() {
-        return id;
+    public String getProductID() {
+        return productID;
     }
 
     public String getName() {
@@ -43,13 +43,13 @@ public class Product {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return Objects.equals(id, product.id) &&
+        return Objects.equals(productID, product.productID) &&
                 Objects.equals(name, product.name) &&
                 Double.compare(product.price, price) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, id, price);
+        return Objects.hash(name, productID, price);
     }
 }
