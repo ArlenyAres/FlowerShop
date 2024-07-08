@@ -28,8 +28,22 @@ public class FlowerShopManager {
 
     public void createFlorist(String name) {
         //this.flowerShop = new FlowerShop(name);
-        FlowerShop shop = new FlowerShop(name);
-        shopList.add(shop);
+        if (shopList.isEmpty()){
+            FlowerShop shop = new FlowerShop(name);
+            shopList.add(shop);
+        } else {
+            verifyShopList(name);
+        }
+    }
+    public void verifyShopList(String name){
+        for (int i = 0; i < shopList.size(); i++) {
+            if (shopList.get(i).getName().equalsIgnoreCase(name)){
+                System.out.println("This name is not available, please choose another name. ");
+            } else {
+                FlowerShop shop = new FlowerShop(name);
+                shopList.add(shop);
+            }
+        }
     }
 
 /*

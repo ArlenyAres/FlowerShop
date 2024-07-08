@@ -2,20 +2,20 @@ package Services;
 
 import Model.*;
 import static Services.Input.*;
-import static Services.Menu.findShop;
 import Exception.InsufficientStockException;
 
 public class SubMenu {
     public static void createProduct(FlowerShop shop) {
         int quantity = readInt("How many products? \n");
         boolean working = true;
-        while (working) {
-            System.out.println("Products : \n " +
+
+        do {
+            System.out.println("What type of product would you like to add? : \n " +
                     "1. Decoration\n " +
                     "2. Flower\n " +
                     "3. Tree\n " +
                     "0. Exit");
-            int option = readInt("What type of product would you like to add?\n");
+            int option = readInt("");
 
             switch (option) {
                 case 1:
@@ -24,19 +24,22 @@ public class SubMenu {
                     break;
                 case 2:
                     createFlower(shop, quantity);
+                    System.out.println("The products were added to the stock");
                     working = false;
                     break;
                 case 3:
                     createTree(shop, quantity);
+                    System.out.println("The products were added to the stock");
                     working = false;
                     break;
                 case 0:
+                    System.out.println("No products added to the stock");
                     working = false;
                     break;
                 default:
                     System.out.println("Invalid option, try again");
             }
-        }
+        } while (working);
     }
 
     public static void createDecoration(FlowerShop shop, int quantity){
@@ -52,13 +55,14 @@ public class SubMenu {
         if (type == 1){
             product = new Decoration(productName, price, Decoration.DecorationType.WOOD);
             shop.getStockFromRepository().addProduct(product, quantity);
+            System.out.println("The products were added to the stock");
         } else if (type == 2) {
             product = new Decoration(productName, price, Decoration.DecorationType.PLASTIC);
             shop.getStockFromRepository().addProduct(product, quantity);
+            System.out.println("The products were added to the stock");
         } else {
             System.out.println("Unable to create the product, please verify the product info! ");
         }
-
     }
 
     public static void createFlower(FlowerShop shop, int quantity){
