@@ -76,6 +76,9 @@ public class Menu {
                     ticket.createTicket();
                     break;
                 case 8 :
+                    text = readString("what is the name of the flower shop?");
+                    shop = findShop(admin, text);
+                    shop.showHistory();
                     break;
                 case 9 :
                     text = readString("what is the name of the flower shop?");

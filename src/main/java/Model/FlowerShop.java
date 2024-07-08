@@ -78,4 +78,12 @@ public class FlowerShop {
         }
         return total;
     }
+
+    public void showHistory() {
+        System.out.println("—————————————— Purchases History ———————————\n");
+        for (Purchase purchase : purchaseHistory) {
+            System.out.println(purchase.toString());
+        }
+        System.out.println("—————————————————————————————————————————————");
+    }
 }

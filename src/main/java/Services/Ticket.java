@@ -18,12 +18,11 @@ public class Ticket {
         System.out.println("                      Ticket                     ");
         System.out.println("--------------------------------------------------------------");
         System.out.println("Date " + purchase.getDate() + "\n");
-
+        System.out.printf("%-20s %-15s %-15s %-15s%n",
+                "Item", "Price", "Quant", "Subtotal");
         for (Map.Entry<Product, Integer> entry : purchase.getPurchasedProductList().entrySet()) {
             Product product = entry.getKey();
             int quantity = entry.getValue();
-            System.out.printf("%-20s %-15s %-15s %-15s%n",
-                    "Item", "Price", "Quant", "Subtotal");
             System.out.printf("%-20s %-15s %-15d %-15s%n",
                     product.getName(),
                     "€" + product.getPrice(),
