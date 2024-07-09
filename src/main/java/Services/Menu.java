@@ -32,7 +32,6 @@ public class Menu {
                     "7. Create ticket\n " +
                     "8. Show history\n " +
                     "9. Money earned from all sales\n " +
-                    "10. Save flower shops to MongoDB\n " +
                     "0. Exit");
             option = readInt("Enter your option : ");
 
@@ -86,9 +85,6 @@ public class Menu {
                     flowerShopList(admin);
                     shop = chooseFlowerShop(admin);
                     System.out.println("The total earnings of the flower shop is: €" + shop.calculateTotalEarnings());
-                    break;
-                case 10:
-                    saveFlowerShopsToMongoDB(admin);
                     break;
                 case 0:
                     System.out.println("Good Bye!");
