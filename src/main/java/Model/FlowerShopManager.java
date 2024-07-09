@@ -19,31 +19,34 @@ public class FlowerShopManager {
         return shopList;
     }
 
-//    public void createFlorist(String name) {
-//        if (shopList.isEmpty()){
-//            FlowerShop shop = new FlowerShop(name);
-//            shopList.add(shop);
-//        } else {
-//            verifyShopList(name);
-//        }
+    public void createFlorist(String name, MongoDBService mongoDBService) {
+        if (shopList.isEmpty()){
+            FlowerShop shop = new FlowerShop(name);
+            shopList.add(shop);
+            mongoDBService.insertFlowerShop(shop);
+        } else {
+            verifyShopList(name, mongoDBService);
+
+        }
+    }
+//
+//    public void createFlorist(String name, MongoDBService mongoDBService) {
+//        FlowerShop shop = new FlowerShop(name);
+//        shopList.add(shop);
+//        mongoDBService.insertFlowerShop(shop);
 //    }
 
-    public void createFlorist(String name, MongoDBService mongoDBService) {
-        FlowerShop shop = new FlowerShop(name);
-        shopList.add(shop);
-        mongoDBService.insertFlowerShop(shop);
-    }
 
 
 
-
-    public void verifyShopList(String name){
+    public void verifyShopList(String name, MongoDBService mongoDBService){
         for (int i = 0; i < shopList.size(); i++) {
             if (shopList.get(i).getName().equalsIgnoreCase(name)){
                 System.out.println("This name is not available, please choose another name. ");
             } else {
                 FlowerShop shop = new FlowerShop(name);
                 shopList.add(shop);
+                mongoDBService.insertFlowerShop(shop);
             }
         }
     }
