@@ -12,7 +12,6 @@ public class SubMenu {
 
     private static final Logger logger = LoggerFactory.getLogger(SubMenu.class);
 
-
     public static void createProduct(FlowerShop shop, MongoDBService mongoDBService) {
         int quantity = readInt("How many products? \n");
         boolean working = true;
@@ -139,6 +138,8 @@ public class SubMenu {
                     break;
                 case 0:
                     System.out.println("Good Bye!\n");
+                    Ticket ticket = new Ticket(purchase);
+                    ticket.createTicket();
                     buying = false;
                     break;
                 default:

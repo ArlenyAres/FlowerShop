@@ -18,7 +18,6 @@ public class Menu {
         admin.loadFlowerShopsFromDatabase(mongoDBService);
         FlowerShop shop;
         Purchase purchase;
-        Ticket ticket;
         int option = -1;
         boolean working = true;
 
@@ -78,8 +77,6 @@ public class Menu {
                     shop.addPurchaseToHistory(purchase);
                     mongoDBService.updateFlowerShop(shop);
                     mongoDBService.insertPurchase(shop, purchase);
-                    ticket = new Ticket(purchase);
-                    ticket.createTicket();
                     break;
                 case 8:
                     flowerShopList(admin);
