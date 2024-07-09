@@ -1,11 +1,7 @@
 package Model;
 
-import Services.Ticket;
 import Services.MongoDBService;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class FlowerShopManager {
 
@@ -20,31 +16,23 @@ public class FlowerShopManager {
     }
 
     public void createFlorist(String name, MongoDBService mongoDBService) {
+        FlowerShop shop = new FlowerShop(name);
+
         if (shopList.isEmpty()){
-            FlowerShop shop = new FlowerShop(name);
             shopList.add(shop);
             mongoDBService.insertFlowerShop(shop);
         } else {
             verifyShopList(name, mongoDBService);
-
         }
     }
-//
-//    public void createFlorist(String name, MongoDBService mongoDBService) {
-//        FlowerShop shop = new FlowerShop(name);
-//        shopList.add(shop);
-//        mongoDBService.insertFlowerShop(shop);
-//    }
-
-
-
 
     public void verifyShopList(String name, MongoDBService mongoDBService){
+        FlowerShop shop = new FlowerShop(name);
+
         for (int i = 0; i < shopList.size(); i++) {
             if (shopList.get(i).getName().equalsIgnoreCase(name)){
                 System.out.println("This name is not available, please choose another name. ");
-            } else {
-                FlowerShop shop = new FlowerShop(name);
+            } else if (!shopList.get(i).getName().equalsIgnoreCase(name) && i == (shopList.size()-1)){
                 shopList.add(shop);
                 mongoDBService.insertFlowerShop(shop);
             }

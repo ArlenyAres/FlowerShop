@@ -34,7 +34,7 @@ public class MongoDBService {
         logger.info("Inserting flower shop: {}", flowerShop.getName());
         MongoCollection<Document> collection = database.getCollection(FLOWERS_SHOP_COLLECTION);
 
-        Document doc = new Document("id", flowerShop.getId())
+        Document doc = new Document("id", flowerShop.getShopId())
                 .append("name", flowerShop.getName())
                 .append("totalEarnings", flowerShop.calculateTotalEarnings())
                 .append("products", flowerShop.getStockFromRepository().getStock().entrySet().stream()
@@ -127,7 +127,7 @@ public class MongoDBService {
     public void updateFlowerShop(FlowerShop flowerShop) {
         logger.info("Updating flower shop: {}", flowerShop.getName());
         MongoCollection<Document> collection = database.getCollection(FLOWERS_SHOP_COLLECTION);
-        Document query = new Document("id", flowerShop.getId());
+        Document query = new Document("id", flowerShop.getShopId());
         Document update = new Document("$set", new Document("name", flowerShop.getName())
                 .append("totalEarnings", flowerShop.calculateTotalEarnings())
                 .append("products", flowerShop.getStockFromRepository().getStock().entrySet().stream()

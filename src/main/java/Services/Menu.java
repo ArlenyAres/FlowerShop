@@ -1,8 +1,6 @@
 package Services;
 
 import Model.*;
-
-import java.util.ArrayList;
 import java.util.List;
 import static Services.Input.*;
 
@@ -32,7 +30,6 @@ public class Menu {
                     "7. Create ticket\n " +
                     "8. Show history\n " +
                     "9. Money earned from all sales\n " +
-                    "10. Save flower shops to MongoDB\n " +
                     "0. Exit");
             option = readInt("Enter your option : ");
 
@@ -41,19 +38,18 @@ public class Menu {
                     String text = readString("What is the name of the new flower shop?");
                     admin.createFlorist(text, mongoDBService);
                     System.out.println("The new flower shop " + text + " was created!\n");
-                    mongoDBService.insertFlowerShop(admin.getShopList().get(admin.getShopList().size() - 1));
                     break;
                 case 2:
                     flowerShopList(admin);
                     shop = chooseFlowerShop(admin);
                     SubMenu.createProduct(shop, mongoDBService);
-                    mongoDBService.updateFlowerShop(shop); // Update the flower shop in MongoDB after adding a product
+                    mongoDBService.updateFlowerShop(shop);
                     break;
                 case 3:
                     flowerShopList(admin);
                     shop = chooseFlowerShop(admin);
                     shop.getStockFromRepository().removeProducts(shop.getStockFromRepository().getStock());
-                    mongoDBService.updateFlowerShop(shop); // Update the flower shop in MongoDB after removing a product
+                    mongoDBService.updateFlowerShop(shop);
                     break;
                 case 4:
                     flowerShopList(admin);
@@ -88,9 +84,6 @@ public class Menu {
                     shop = chooseFlowerShop(admin);
                     System.out.println("The total earnings of the flower shop is: €" + shop.calculateTotalEarnings());
                     break;
-                case 10:
-                    saveFlowerShopsToMongoDB(admin);
-                    break;
                 case 0:
                     System.out.println("Good Bye!");
                     working = false;
@@ -99,13 +92,6 @@ public class Menu {
                     System.out.println("Invalid option");
             }
         } while (working);
-    }
-
-    private void saveFlowerShopsToMongoDB(FlowerShopManager admin) {
-        for (FlowerShop shop : admin.getShopList()) {
-            mongoDBService.insertFlowerShop(shop);
-        }
-        System.out.println("Flower shops saved to MongoDB.");
     }
 
     public void showHistory(List<Purchase> purchases) {
