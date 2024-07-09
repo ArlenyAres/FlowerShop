@@ -1,33 +1,51 @@
 package Services;
 
+import Database.MongoDBConnection;
 import Model.*;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MongoDBService {
+    private static final Logger logger = LoggerFactory.getLogger(MongoDBService.class);
     private static final String DATABASE_NAME = "dbFlowerShop";
     private static final String FLOWERS_SHOP_COLLECTION = "flowerShops";
-    private static final String PRODUCT_COLLECTION = "products";
-    private MongoClient mongoClient;
     private MongoDatabase database;
+    private MongoDBConnection connection;
 
     public MongoDBService() {
-        this.mongoClient = MongoClients.create("mongodb://localhost:27017");
-        this.database = mongoClient.getDatabase(DATABASE_NAME);
+        connection = MongoDBConnection.getInstance();
+        if (connection.createConnect()) {
+            this.database = connection.getDatabase(DATABASE_NAME);
+        } else {
+            connection.logError("Failed to connect to MongoDB", null);
+        }
     }
 
     public void insertFlowerShop(FlowerShop flowerShop) {
+        logger.info("Inserting flower shop: {}", flowerShop.getName());
         MongoCollection<Document> collection = database.getCollection(FLOWERS_SHOP_COLLECTION);
+
         Document doc = new Document("id", flowerShop.getId())
                 .append("name", flowerShop.getName())
-                .append("totalEarnings", flowerShop.calculateTotalEarnings());
+                .append("totalEarnings", flowerShop.calculateTotalEarnings())
+                .append("products", flowerShop.getStockFromRepository().getStock().entrySet().stream()
+                        .map(e -> new Document("productID", e.getKey().getProductID())
+                                .append("name", e.getKey().getName())
+                                .append("price", e.getKey().getPrice())
+                                .append("type", getProductType(e.getKey()))
+                                .append("quantity", e.getValue())
+                                .append("specificAttributes", getProductSpecificAttributes(e.getKey())))
+                        .collect(Collectors.toList()));
+
         collection.insertOne(doc);
+        logger.info("Flower shop inserted: {}", flowerShop.getName());
     }
 
     public FlowerShop findFlowerShopById(int id) {
@@ -36,7 +54,16 @@ public class MongoDBService {
         Document doc = collection.find(query).first();
         if (doc != null) {
             String name = doc.getString("name");
-            return new FlowerShop(name); // Aquí podrías configurar otros atributos
+            FlowerShop flowerShop = new FlowerShop(name);
+            List<Document> products = (List<Document>) doc.get("products");
+            if (products != null) {
+                for (Document productDoc : products) {
+                    Product product = documentToProduct(productDoc);
+                    int quantity = productDoc.getInteger("quantity");
+                    flowerShop.getStockFromRepository().addProduct(product, quantity);
+                }
+            }
+            return flowerShop;
         }
         return null;
     }
@@ -47,16 +74,35 @@ public class MongoDBService {
         for (Document doc : collection.find()) {
             String name = doc.getString("name");
             FlowerShop flowerShop = new FlowerShop(name);
+            List<Document> products = (List<Document>) doc.get("products");
+            if (products != null) {
+                for (Document productDoc : products) {
+                    Product product = documentToProduct(productDoc);
+                    int quantity = productDoc.getInteger("quantity");
+                    flowerShop.getStockFromRepository().addProduct(product, quantity);
+                }
+            }
             flowerShops.add(flowerShop);
         }
         return flowerShops;
     }
 
     public void updateFlowerShop(FlowerShop flowerShop) {
+        logger.info("Updating flower shop: {}", flowerShop.getName());
         MongoCollection<Document> collection = database.getCollection(FLOWERS_SHOP_COLLECTION);
         Document query = new Document("id", flowerShop.getId());
-        Document update = new Document("$set", new Document("name", flowerShop.getName()));
+        Document update = new Document("$set", new Document("name", flowerShop.getName())
+                .append("totalEarnings", flowerShop.calculateTotalEarnings())
+                .append("products", flowerShop.getStockFromRepository().getStock().entrySet().stream()
+                        .map(e -> new Document("productID", e.getKey().getProductID())
+                                .append("name", e.getKey().getName())
+                                .append("price", e.getKey().getPrice())
+                                .append("type", getProductType(e.getKey()))
+                                .append("quantity", e.getValue())
+                                .append("specificAttributes", getProductSpecificAttributes(e.getKey())))
+                        .collect(Collectors.toList())));
         collection.updateOne(query, update);
+        logger.info("Flower shop updated: {}", flowerShop.getName());
     }
 
     public void deleteFlowerShop(int id) {
@@ -65,91 +111,88 @@ public class MongoDBService {
         collection.deleteOne(query);
     }
 
-    public void insertProduct(Product product) {
-        MongoCollection<Document> collection = database.getCollection(PRODUCT_COLLECTION);
-        Document doc = new Document("productID", product.getProductID())
-                .append("name", product.getName())
-                .append("price", product.getPrice());
-
+    private String getProductType(Product product) {
         if (product instanceof Tree) {
-            doc.append("type", "Tree")
-                    .append("height", ((Tree) product).getHeight());
+            return "Tree";
         } else if (product instanceof Flower) {
-            doc.append("type", "Flower")
-                    .append("color", ((Flower) product).getColor());
+            return "Flower";
         } else if (product instanceof Decoration) {
-            doc.append("type", "Decoration")
-                    .append("decorationType", ((Decoration) product).getType().toString());
+            return "Decoration";
         }
-        collection.insertOne(doc);
+        return "Unknown";
     }
 
-    public Product findProductById(String productID) {
-        MongoCollection<Document> collection = database.getCollection(PRODUCT_COLLECTION);
-        Document query = new Document("productID", productID);
-        Document doc = collection.find(query).first();
-
-        if (doc != null) {
-            return documentToProduct(doc);
-        }
-        return null;
-    }
-
-    public List<Product> findAllProducts() {
-        MongoCollection<Document> collection = database.getCollection(PRODUCT_COLLECTION);
-        List<Product> products = new ArrayList<>();
-        for (Document doc : collection.find()) {
-            products.add(documentToProduct(doc));
-        }
-        return products;
-    }
-
-    public void updateProduct(Product product) {
-        MongoCollection<Document> collection = database.getCollection(PRODUCT_COLLECTION);
-        Document query = new Document("productID", product.getProductID());
-        Document update = new Document("$set", new Document("name", product.getName())
-                .append("price", product.getPrice()));
-
+    private Document getProductSpecificAttributes(Product product) {
+        Document attributes = new Document();
         if (product instanceof Tree) {
-            update.append("$set", new Document("height", ((Tree) product).getHeight()));
+            attributes.append("height", ((Tree) product).getHeight());
         } else if (product instanceof Flower) {
-            update.append("$set", new Document("color", ((Flower) product).getColor()));
+            attributes.append("color", ((Flower) product).getColor());
         } else if (product instanceof Decoration) {
-            update.append("$set", new Document("decorationType", ((Decoration) product).getType().toString()));
+            attributes.append("decorationType", ((Decoration) product).getType().toString());
         }
-
-        collection.updateOne(query, update);
-    }
-
-    public void deleteProduct(String productID) {
-        MongoCollection<Document> collection = database.getCollection(PRODUCT_COLLECTION);
-        Document query = new Document("productID", productID);
-        collection.deleteOne(query);
+        return attributes;
     }
 
     private Product documentToProduct(Document doc) {
         String type = doc.getString("type");
         String name = doc.getString("name");
         double price = doc.getDouble("price");
+        Document specificAttributes = doc.get("specificAttributes", Document.class);
 
         switch (type) {
             case "Tree":
-                double height = doc.getDouble("height");
+                double height = specificAttributes.getDouble("height");
                 return new Tree(name, price, height);
             case "Flower":
-                String color = doc.getString("color");
+                String color = specificAttributes.getString("color");
                 return new Flower(name, price, color);
             case "Decoration":
-                Decoration.DecorationType decorationType = Decoration.DecorationType.valueOf(doc.getString("decorationType"));
+                Decoration.DecorationType decorationType = Decoration.DecorationType.valueOf(specificAttributes.getString("decorationType"));
                 return new Decoration(name, price, decorationType);
             default:
                 return new Product(name, price);
         }
     }
 
+
+
+
+//    private FlowerShop documentToFlowerShop(Document doc) {
+//        String name = doc.getString("name");
+//        FlowerShop flowerShop = new FlowerShop(name);
+//        List<Document> products = (List<Document>) doc.get("products");
+//        if (products != null) {
+//            for (Document productDoc : products) {
+//                Product product = documentToProduct(productDoc);
+//                int quantity = productDoc.getInteger("quantity");
+//                flowerShop.getStockFromRepository().addProduct(product, quantity);
+//            }
+//        }
+//        return flowerShop;
+//    }
+//
+//
+//    public void loadFlowerShopsFromMongoDB(FlowerShopManager admin) {
+//        connection.logInfo("Loading flower shops from MongoDB");
+//        MongoCollection<Document> collection = database.getCollection(FLOWERS_SHOP_COLLECTION);
+//        for (Document doc : collection.find()) {
+//            FlowerShop flowerShop = documentToFlowerShop(doc);
+//            admin.getShopList().add(flowerShop);
+//        }
+//    }
+
+    public void insertTestDocument() {
+        MongoCollection<Document> collection = database.getCollection(FLOWERS_SHOP_COLLECTION);
+        Document testDoc = new Document("testField", "testValue");
+        Document testDoc1 = new Document("testField!!!!", "testValue!!!");
+        collection.insertOne(testDoc);
+        logger.info("Inserted test document");
+    }
+
+
+
     public void close() {
-        mongoClient.close();
+        connection.closeConnection();
     }
 }
-
-

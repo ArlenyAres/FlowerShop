@@ -13,6 +13,7 @@ public class Menu {
 
     public void start() {
         FlowerShopManager admin = new FlowerShopManager();
+        admin.loadFlowerShopsFromDatabase(mongoDBService);
         FlowerShop shop;
         Purchase purchase;
         Ticket ticket;
@@ -31,27 +32,27 @@ public class Menu {
                     "8. Show history\n " +
                     "9. Money earned from all sales\n " +
                     "10. Save flower shops to MongoDB\n " +
-                    "11. Load flower shops from MongoDB\n " +
-                    "12. Save products to MongoDB\n " +
-                    "13. Load products from MongoDB\n " +
                     "0. Exit");
             option = readInt("Enter your option : ");
 
             switch (option) {
                 case 1:
                     String text = readString("What is the name of the new flower shop?");
-                    admin.createFlorist(text);
+                    admin.createFlorist(text, mongoDBService);
                     System.out.println("The new flower shop " + text + " was created!\n");
+                    mongoDBService.insertFlowerShop(admin.getShopList().get(admin.getShopList().size() - 1));
                     break;
                 case 2:
                     flowerShopList(admin);
                     shop = chooseFlowerShop(admin);
                     SubMenu.createProduct(shop, mongoDBService);
+                    mongoDBService.updateFlowerShop(shop); // Update the flower shop in MongoDB after adding a product
                     break;
                 case 3:
                     flowerShopList(admin);
                     shop = chooseFlowerShop(admin);
                     shop.getStockFromRepository().removeProducts(shop.getStockFromRepository().getStock());
+                    mongoDBService.updateFlowerShop(shop); // Update the flower shop in MongoDB after removing a product
                     break;
                 case 4:
                     flowerShopList(admin);
@@ -73,6 +74,7 @@ public class Menu {
                     shop = chooseFlowerShop(admin);
                     purchase = SubMenu.createPurchase(shop, mongoDBService);
                     shop.addPurchaseToHistory(purchase);
+                    mongoDBService.updateFlowerShop(shop); // Update the flower shop in MongoDB after a purchase
                     ticket = new Ticket(purchase);
                     ticket.createTicket();
                     break;
@@ -88,19 +90,6 @@ public class Menu {
                     break;
                 case 10:
                     saveFlowerShopsToMongoDB(admin);
-                    break;
-                case 11:
-                    loadFlowerShopsFromMongoDB(admin);
-                    break;
-                case 12:
-                    flowerShopList(admin);
-                    shop = chooseFlowerShop(admin);
-                    saveProductsToMongoDB(shop);
-                    break;
-                case 13:
-                    flowerShopList(admin);
-                    shop = chooseFlowerShop(admin);
-                    loadProductsFromMongoDB(shop);
                     break;
                 case 0:
                     System.out.println("Good Bye!");
@@ -119,26 +108,7 @@ public class Menu {
         System.out.println("Flower shops saved to MongoDB.");
     }
 
-    private void loadFlowerShopsFromMongoDB(FlowerShopManager admin) {
-        List<FlowerShop> flowerShops = mongoDBService.findAllFlowerShops();
-        admin.getShopList().addAll(flowerShops);
-        System.out.println("Flower shops loaded from MongoDB.");
-    }
 
-    private void saveProductsToMongoDB(FlowerShop shop) {
-        for (Product product : shop.getStockFromRepository().getStock().keySet()) {
-            mongoDBService.insertProduct(product);
-        }
-        System.out.println("Products saved to MongoDB.");
-    }
-
-    private void loadProductsFromMongoDB(FlowerShop shop) {
-        List<Product> products = mongoDBService.findAllProducts();
-        for (Product product : products) {
-            shop.getStockFromRepository().addProduct(product, 1); // Suponiendo una cantidad de 1 para cada producto
-        }
-        System.out.println("Products loaded from MongoDB.");
-    }
 
     private void flowerShopList(FlowerShopManager admin) {
         System.out.println("List of flower shops: ");
@@ -163,4 +133,5 @@ public class Menu {
         }
         return shop;
     }
+
 }

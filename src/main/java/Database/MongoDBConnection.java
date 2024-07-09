@@ -2,12 +2,8 @@ package Database;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import com.mongodb.MongoException;
-import com.mongodb.client.ListDatabasesIterable;
+import com.mongodb.client.*;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistries;
@@ -26,7 +22,6 @@ public class MongoDBConnection {
     private final ConnectionString connectionString;
     private MongoClient client = null;
 
-    // Constructor privado para evitar las instancias adicionales
     private MongoDBConnection() {
         Properties properties = null;
 
@@ -34,7 +29,7 @@ public class MongoDBConnection {
             ConfigFile configFile = new ConfigFile("mongodb.properties");
             properties = configFile.readPropertiesFile();
         } catch (Exception e) {
-            logger.error("Error load config file {}", e.getMessage());
+            logger.error("Error loading config file {}", e.getMessage());
             this.connectionString = null;
             return;
         }
@@ -48,7 +43,6 @@ public class MongoDBConnection {
         this.connectionString = new ConnectionString(uri);
     }
 
-    //  para obtener la instancia de conexion de la clase
     public static synchronized MongoDBConnection getInstance() {
         if (instance == null) {
             instance = new MongoDBConnection();
@@ -56,9 +50,9 @@ public class MongoDBConnection {
         return instance;
     }
 
-    public boolean createConnect() throws MongoException {
+    public boolean createConnect() {
         if (this.connectionString == null) {
-            logger.error("Connection string is null, no exists");
+            logger.error("Connection string is null, does not exist");
             return false;
         }
 
@@ -88,12 +82,19 @@ public class MongoDBConnection {
     private boolean getPing(MongoDatabase database) {
         try {
             Document result = database.runCommand(new Document("ping", 1));
-            logger.info("MongoDB connection enable, Result data ping: " + result.toString());
-        } catch (MongoException e) {
+            logger.info("MongoDB connection enabled, Result data ping: " + result.toString());
+        } catch (Exception e) {
             logger.error("ERROR Connection Ping {}", e.getMessage());
             return false;
         }
         return true;
+    }
+
+    public MongoDatabase getDatabase(String databaseName) {
+        if (this.client == null) {
+            createConnect();
+        }
+        return this.client.getDatabase(databaseName);
     }
 
     public void showInfoCluster() {
@@ -125,19 +126,18 @@ public class MongoDBConnection {
         return database.getCollection(collectionName, clazz);
     }
 
-    public MongoDatabase getDatabase(String databaseName) throws MongoException {
-        if (this.client == null) {
-            if (!this.createConnect()) {
-                throw new MongoException("Cannot connect to MongoDB server");
-            }
-        }
-        return this.client.getDatabase(databaseName);
-    }
-
     public void closeConnection() {
         if (this.client != null) {
             this.client.close();
             logger.info("The connection is CLOSED");
         }
+    }
+
+    public void logInfo(String message) {
+        logger.info(message);
+    }
+
+    public void logError(String message, Exception e) {
+        logger.error(message, e);
     }
 }

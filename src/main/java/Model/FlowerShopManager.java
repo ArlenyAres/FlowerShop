@@ -1,7 +1,7 @@
 package Model;
 
 import Services.Ticket;
-
+import Services.MongoDBService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,14 +19,24 @@ public class FlowerShopManager {
         return shopList;
     }
 
-    public void createFlorist(String name) {
-        if (shopList.isEmpty()){
-            FlowerShop shop = new FlowerShop(name);
-            shopList.add(shop);
-        } else {
-            verifyShopList(name);
-        }
+//    public void createFlorist(String name) {
+//        if (shopList.isEmpty()){
+//            FlowerShop shop = new FlowerShop(name);
+//            shopList.add(shop);
+//        } else {
+//            verifyShopList(name);
+//        }
+//    }
+
+    public void createFlorist(String name, MongoDBService mongoDBService) {
+        FlowerShop shop = new FlowerShop(name);
+        shopList.add(shop);
+        mongoDBService.insertFlowerShop(shop);
     }
+
+
+
+
     public void verifyShopList(String name){
         for (int i = 0; i < shopList.size(); i++) {
             if (shopList.get(i).getName().equalsIgnoreCase(name)){
@@ -36,6 +46,10 @@ public class FlowerShopManager {
                 shopList.add(shop);
             }
         }
+    }
+
+    public void loadFlowerShopsFromDatabase(MongoDBService mongoDBService) {
+        shopList = (ArrayList<FlowerShop>) mongoDBService.findAllFlowerShops();
     }
 
 }
