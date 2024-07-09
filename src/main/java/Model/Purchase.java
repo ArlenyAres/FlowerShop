@@ -55,19 +55,19 @@ public class Purchase {
     }
 
     public void removeProductFromPurchaseCart(Product product, int quantity) {
-        if (stock.containsKey(product)) {
-            int currentQuantity = stock.get(product);
+        if (purchaseCart.containsKey(product)) {
+            int quantityInCart = purchaseCart.get(product);
 
-            if (quantity <= currentQuantity) {
-                if (quantity == currentQuantity) {
+            if (quantity <= quantityInCart) {
+                if (quantity == quantityInCart) {
                     purchaseCart.remove(product);
                 } else {
-                    stock.put(product, currentQuantity - quantity);
+                    purchaseCart.put(product, quantityInCart - quantity);
                 }
                 stock.put(product, stock.getOrDefault(product, 0) + quantity);
                 System.out.println(quantity + " " + product.getName() + "(s) removed from the purchase cart.");
             } else {
-                System.out.println("Cannot remove more than available quantity for " + product.getName() + ".");
+                System.out.println("Cannot remove more than available quantity in the cart for " + product.getName() + ".");
             }
         } else {
             System.out.println(product.getName() + " is not in the purchase cart.");
