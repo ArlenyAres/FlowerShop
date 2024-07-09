@@ -5,19 +5,16 @@ import java.util.UUID;
 
 public class Product {
 
-    // Attributes
     private String productID;
     private String name;
     private double price;
 
-    // Constructor
     public Product(String name, double price) {
         this.name = name;
         this.productID = UUID.randomUUID().toString();
         this.price = price;
     }
 
-    // Getters
     public String getProductID() {
         return productID;
     }
@@ -30,7 +27,6 @@ public class Product {
         return price;
     }
 
-    // Setters
     public void setName(String name) {
         this.name = name;
     }

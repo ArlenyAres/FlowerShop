@@ -19,9 +19,6 @@ public class Input {
                 if (userInput.isEmpty()) {
                     throw new InvalidInputException("Services.Input cannot be empty.");
                 }
-                if (!containsOnlyLetters(userInput)) {
-                    throw new InvalidInputException("Format Error. Services.Input must be a string containing only letters.");
-                }
                 isValid = true;
             } catch (Exception e) {
                 System.out.println("Format Error. Introduce a String.");
@@ -66,8 +63,4 @@ public class Input {
         return doubleInput;
     }
 
-
-    public static boolean containsOnlyLetters(String input) {
-        return input.chars().allMatch(c -> Character.isLetter(c) || Character.isWhitespace(c));
-    }
 }

@@ -46,13 +46,13 @@ public class Menu {
                     flowerShopList(admin);
                     shop = chooseFlowerShop(admin);
                     SubMenu.createProduct(shop, mongoDBService);
-                    mongoDBService.updateFlowerShop(shop); // Update the flower shop in MongoDB after adding a product
+                    mongoDBService.updateFlowerShop(shop);
                     break;
                 case 3:
                     flowerShopList(admin);
                     shop = chooseFlowerShop(admin);
                     shop.getStockFromRepository().removeProducts(shop.getStockFromRepository().getStock());
-                    mongoDBService.updateFlowerShop(shop); // Update the flower shop in MongoDB after removing a product
+                    mongoDBService.updateFlowerShop(shop);
                     break;
                 case 4:
                     flowerShopList(admin);

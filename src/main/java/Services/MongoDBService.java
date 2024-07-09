@@ -85,26 +85,6 @@ public class MongoDBService {
         return purchases;
     }
 
-    public FlowerShop findFlowerShopById(int id) {
-        MongoCollection<Document> collection = database.getCollection(FLOWERS_SHOP_COLLECTION);
-        Document query = new Document("id", id);
-        Document doc = collection.find(query).first();
-        if (doc != null) {
-            String name = doc.getString("name");
-            FlowerShop flowerShop = new FlowerShop(name);
-            List<Document> products = (List<Document>) doc.get("products");
-            if (products != null) {
-                for (Document productDoc : products) {
-                    Product product = documentToProduct(productDoc);
-                    int quantity = productDoc.getInteger("quantity");
-                    flowerShop.getStockFromRepository().addProduct(product, quantity);
-                }
-            }
-            return flowerShop;
-        }
-        return null;
-    }
-
     public List<FlowerShop> findAllFlowerShops() {
         MongoCollection<Document> collection = database.getCollection(FLOWERS_SHOP_COLLECTION);
         List<FlowerShop> flowerShops = new ArrayList<>();
@@ -190,41 +170,6 @@ public class MongoDBService {
             default:
                 return new Product(name, price);
         }
-    }
-
-
-
-
-//    private FlowerShop documentToFlowerShop(Document doc) {
-//        String name = doc.getString("name");
-//        FlowerShop flowerShop = new FlowerShop(name);
-//        List<Document> products = (List<Document>) doc.get("products");
-//        if (products != null) {
-//            for (Document productDoc : products) {
-//                Product product = documentToProduct(productDoc);
-//                int quantity = productDoc.getInteger("quantity");
-//                flowerShop.getStockFromRepository().addProduct(product, quantity);
-//            }
-//        }
-//        return flowerShop;
-//    }
-//
-//
-//    public void loadFlowerShopsFromMongoDB(FlowerShopManager admin) {
-//        connection.logInfo("Loading flower shops from MongoDB");
-//        MongoCollection<Document> collection = database.getCollection(FLOWERS_SHOP_COLLECTION);
-//        for (Document doc : collection.find()) {
-//            FlowerShop flowerShop = documentToFlowerShop(doc);
-//            admin.getShopList().add(flowerShop);
-//        }
-//    }
-
-    public void insertTestDocument() {
-        MongoCollection<Document> collection = database.getCollection(FLOWERS_SHOP_COLLECTION);
-        Document testDoc = new Document("testField", "testValue");
-        Document testDoc1 = new Document("testField!!!!", "testValue!!!");
-        collection.insertOne(testDoc);
-        logger.info("Inserted test document");
     }
 
 

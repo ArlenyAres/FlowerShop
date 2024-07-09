@@ -74,9 +74,6 @@ public class Purchase {
         }
     }
 
-    public Map<Product, Integer> checkoutPurchase() {
-        return stock;
-    }
 
     public double calculateTotalPrice() {
         return purchaseCart.entrySet().stream()
