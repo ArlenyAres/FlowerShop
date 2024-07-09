@@ -68,6 +68,6 @@ public class Input {
 
 
     public static boolean containsOnlyLetters(String input) {
-        return input.chars().allMatch(Character::isLetter);
+        return input.chars().allMatch(c -> Character.isLetter(c) || Character.isWhitespace(c));
     }
 }
