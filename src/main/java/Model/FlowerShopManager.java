@@ -29,13 +29,6 @@ public class FlowerShopManager {
 
         }
     }
-//
-//    public void createFlorist(String name, MongoDBService mongoDBService) {
-//        FlowerShop shop = new FlowerShop(name);
-//        shopList.add(shop);
-//        mongoDBService.insertFlowerShop(shop);
-//    }
-
 
 
 

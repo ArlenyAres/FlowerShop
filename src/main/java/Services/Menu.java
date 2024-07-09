@@ -42,7 +42,6 @@ public class Menu {
                     String text = readString("What is the name of the new flower shop?");
                     admin.createFlorist(text, mongoDBService);
                     System.out.println("The new flower shop " + text + " was created!\n");
-                    mongoDBService.insertFlowerShop(admin.getShopList().get(admin.getShopList().size() - 1));
                     break;
                 case 2:
                     flowerShopList(admin);
