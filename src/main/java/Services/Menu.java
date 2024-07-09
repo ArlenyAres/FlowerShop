@@ -1,6 +1,8 @@
 package Services;
 
 import Model.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import static Services.Input.*;
 
@@ -74,14 +76,15 @@ public class Menu {
                     shop = chooseFlowerShop(admin);
                     purchase = SubMenu.createPurchase(shop, mongoDBService);
                     shop.addPurchaseToHistory(purchase);
-                    mongoDBService.updateFlowerShop(shop); // Update the flower shop in MongoDB after a purchase
+                    mongoDBService.updateFlowerShop(shop);
+                    mongoDBService.insertPurchase(shop, purchase);
                     ticket = new Ticket(purchase);
                     ticket.createTicket();
                     break;
                 case 8:
                     flowerShopList(admin);
                     shop = chooseFlowerShop(admin);
-                    shop.showHistory();
+                    showHistory(mongoDBService.getPurchases(shop));
                     break;
                 case 9:
                     flowerShopList(admin);
@@ -108,7 +111,14 @@ public class Menu {
         System.out.println("Flower shops saved to MongoDB.");
     }
 
-
+    public void showHistory(List<Purchase> purchases) {
+        System.out.println("                       Purchases History                     ");
+        for (Purchase purchase : purchases) {
+            System.out.println("-------------------------------------------------------------");
+            System.out.println(purchase.toString());
+        }
+        System.out.println("-------------------------------------------------------------");
+    }
 
     private void flowerShopList(FlowerShopManager admin) {
         System.out.println("List of flower shops: ");

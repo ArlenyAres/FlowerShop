@@ -2,6 +2,7 @@ package Services;
 
 import Database.MongoDBConnection;
 import Model.*;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
@@ -16,6 +17,7 @@ public class MongoDBService {
     private static final Logger logger = LoggerFactory.getLogger(MongoDBService.class);
     private static final String DATABASE_NAME = "dbFlowerShop";
     private static final String FLOWERS_SHOP_COLLECTION = "flowerShops";
+    private static final String PURCHASE_COLLECTION = "purchases";
     private MongoDatabase database;
     private MongoDBConnection connection;
 
@@ -46,6 +48,41 @@ public class MongoDBService {
 
         collection.insertOne(doc);
         logger.info("Flower shop inserted: {}", flowerShop.getName());
+    }
+
+    public void insertPurchase(FlowerShop flowerShop, Purchase purchase) {
+        MongoCollection<Document> collection = database.getCollection(PURCHASE_COLLECTION);
+
+        Document purchaseDoc = new Document("id", purchase.getPurchaseID())
+                .append("shopId", flowerShop.getId())
+                .append("date", purchase.getDate())
+                .append("products", purchase.getPurchasedProductList().entrySet().stream()
+                        .map(e -> new Document("productID", e.getKey().getProductID())
+                                .append("name", e.getKey().getName())
+                                .append("price", e.getKey().getPrice())
+                                .append("type", getProductType(e.getKey()))
+                                .append("quantity", e.getValue())
+                                .append("specificAttributes", getProductSpecificAttributes(e.getKey())))
+                        .collect(Collectors.toList()));
+
+        collection.insertOne(purchaseDoc);
+        logger.info("Purchase inserted: {}", purchase.getPurchaseID());
+    }
+
+    public List<Purchase> getPurchases(FlowerShop flowerShop) {
+        MongoCollection<Document> collection = database.getCollection(PURCHASE_COLLECTION);
+        Document purchaseQuery = new Document("shopId", flowerShop.getId());
+        ArrayList<Document> purchaseDocuments = new ArrayList<>();
+
+        collection.find(purchaseQuery).forEach(doc -> {
+            purchaseDocuments.add(purchaseDocuments.size(), doc);
+        });
+
+        List<Purchase> purchases = purchaseDocuments.stream()
+                .map(document -> new Purchase(flowerShop, document))
+                .collect(Collectors.toList());
+
+        return purchases;
     }
 
     public FlowerShop findFlowerShopById(int id) {

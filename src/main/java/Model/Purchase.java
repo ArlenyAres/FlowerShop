@@ -1,11 +1,11 @@
 package Model;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import Exception.InsufficientStockException;
+import org.bson.Document;
 
 public class Purchase {
     private FlowerShop flowerShop;
@@ -13,6 +13,20 @@ public class Purchase {
     private Date date;
     private Map<Product, Integer> stock;
     private Map<Product, Integer> purchaseCart;
+
+    public Purchase(FlowerShop shop, Document purchaseDoc) {
+        this.flowerShop = shop;
+        this.purchaseID = purchaseDoc.getString("id");
+        this.date = purchaseDoc.getDate("date");
+        this.stock = shop.getStockFromRepository().getStock();
+        this.purchaseCart = new HashMap<>();
+
+        List<Document> productDocs = purchaseDoc.getList("products", Document.class);
+        productDocs.forEach(productDoc -> {
+            Product product = new Product(productDoc.getString("name"), productDoc.getDouble("price"));
+            purchaseCart.put(product, productDoc.getInteger("quantity"));
+        });
+    }
 
     public Purchase(FlowerShop flowerShop, Map<Product, Integer> stock) {
         this.flowerShop = flowerShop;
@@ -87,7 +101,6 @@ public class Purchase {
         StringBuilder productListString = new StringBuilder();
         double totalValue = 0;
 
-        // Header for product details
         productListString.append(String.format("%-20s %-10s %-10s %-10s\n", "Product", "Quantity", "Unit Price", "Price"));
 
         for (Map.Entry<Product, Integer> entry : purchaseCart.entrySet()) {
@@ -97,7 +110,6 @@ public class Purchase {
             double price = unitPrice * quantity;
             totalValue += price;
 
-            // Append product details
             productListString.append(String.format("%-20s %-10d %-10.2f %-10.2f\n", product.getName(), quantity, unitPrice, price));
         }
 
@@ -106,7 +118,6 @@ public class Purchase {
         return "Purchase ID: " + purchaseID + ":" +
                 "\n  FlowerShop: " + flowerShop.getName() +
                 ", \n  Date: " + sdf.format(date) +
-                ", \n  Purchased Products List:\n" + productListString.toString() +
-                "\n";
+                ", \n  Purchased Products List:\n" + productListString.toString();
     }
 }
