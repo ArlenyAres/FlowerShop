@@ -2,26 +2,26 @@ package Model;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.UUID;
 
 public class FlowerShop {
 
-    private int id;
-    private static int nextId = 1;
+    private String shopId;
     private String name;
     private StockRepository stockFromRepository;
     private ArrayList<Purchase> purchaseHistory;
     private double totalEarnings;
 
     public FlowerShop(String name) {
-        this.id = nextId++;
+        this.shopId = UUID.randomUUID().toString();
         this.name = name;
         this.stockFromRepository = new StockRepository();
         this.purchaseHistory = new ArrayList<>();
         this.totalEarnings = 0.0;
     }
 
-    public int getId() {
-        return id;
+    public String getShopId() {
+        return shopId;
     }
 
     public String getName() {
