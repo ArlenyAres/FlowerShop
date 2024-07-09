@@ -4,8 +4,6 @@ import Model.*;
 import Exception.InsufficientStockException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Map;
 import static Services.Input.*;
 
 public class SubMenu {
@@ -65,7 +63,7 @@ public class SubMenu {
         }
 
         shop.getStockFromRepository().addProduct(product, quantity);
-        mongoDBService.updateFlowerShop(shop); // Update the flower shop in MongoDB after adding a product
+        mongoDBService.updateFlowerShop(shop);
         System.out.println("The products were added to the stock and saved to MongoDB.");
     }
 
@@ -77,7 +75,7 @@ public class SubMenu {
 
         product = new Flower(name, price, color);
         shop.getStockFromRepository().addProduct(product, quantity);
-        mongoDBService.updateFlowerShop(shop); // Update the flower shop in MongoDB after adding a product
+        mongoDBService.updateFlowerShop(shop);
         System.out.println("The products were added to the stock and saved to MongoDB.");
     }
 
@@ -89,7 +87,7 @@ public class SubMenu {
 
         product = new Tree(name, price, height);
         shop.getStockFromRepository().addProduct(product, quantity);
-        mongoDBService.updateFlowerShop(shop); // Update the flower shop in MongoDB after adding a product
+        mongoDBService.updateFlowerShop(shop);
         System.out.println("The products were added to the stock and saved to MongoDB.");
     }
 
@@ -146,7 +144,7 @@ public class SubMenu {
             }
         } while (buying);
 
-        mongoDBService.updateFlowerShop(shop); // Update the flower shop in MongoDB after the purchase
+        mongoDBService.updateFlowerShop(shop);
         return purchase;
     }
 
