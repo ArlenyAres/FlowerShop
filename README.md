@@ -93,9 +93,19 @@ Select an option by entering the corresponding number and follow the on-screen i
 
 ### development team
 
-Name: [Arleny Medina Prince]
+## Marina Aguiar Alecrim
+Email: [your.email@example.com]
+
+GitHub: [ https://github.com/marinaaguiar]
+
+Likendin:  https://www.linkedin.com/in/marina-aguiar]
+
+
+## Arleny Medina Prince
 Email: [Arleny.ares@gmail.com]
+
 GitHub: [https://github.com/ArlenyAres]
+
 Likendin: [www.linkedin.com/in/arleny-medina-prince]
 
 Thank you for using the Flower Shop Management System!
