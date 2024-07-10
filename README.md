@@ -91,14 +91,27 @@ Show total earnings.
 Exit.
 Select an option by entering the corresponding number and follow the on-screen instructions.
 
+### Project Board
+
+Our [Project Board](https://github.com/users/marinaaguiar/projects/1/views/1) follows the Kanban methodology, organizing tasks into columns for Backlog, To Do, In Progress, and Done, ensuring streamlined workflow and clear task management.
+
+---
+
 ### development team
+
+## Camilo Galan
+Email: [camiloarthuro94@gmail.com]
+
+GitHub: [https://github.com/camilo-arthuro]
+
+Linkedin: []
 
 ## Marina Aguiar Alecrim
 Email: [marinaaguiar.dev@gmail.com]
 
-GitHub: [ https://github.com/marinaaguiar]
+GitHub: [https://github.com/marinaaguiar]
 
-Likendin:  https://www.linkedin.com/in/marina-aguiar]
+Linkedin: [https://www.linkedin.com/in/marina-aguiar]
 
 
 ## Arleny Medina Prince
@@ -106,6 +119,6 @@ Email: [Arleny.ares@gmail.com]
 
 GitHub: [https://github.com/ArlenyAres]
 
-Likendin: [www.linkedin.com/in/arleny-medina-prince]
+Linkedin: [www.linkedin.com/in/arleny-medina-prince]
 
 Thank you for using the Flower Shop Management System!
