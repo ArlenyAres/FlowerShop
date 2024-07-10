@@ -94,7 +94,7 @@ Select an option by entering the corresponding number and follow the on-screen i
 ### development team
 
 ## Marina Aguiar Alecrim
-Email: [your.email@example.com]
+Email: [marinaaguiar.dev@gmail.com]
 
 GitHub: [ https://github.com/marinaaguiar]
 
